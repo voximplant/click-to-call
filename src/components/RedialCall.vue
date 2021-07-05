@@ -1,31 +1,29 @@
 <template lang="pug">
-.connection
-  .state
-    Spinner(size="l")
-    .text Connection...
-  Button(@click="hangup") Cancel
+.redial-call
+  .text Press the button to call
+  Button(icon="ic20-phone" @click="redial") Call
 </template>
 
 <script lang="ts">
+  import { Button } from '@voximplant/spaceui';
   import { defineComponent } from 'vue';
-  import { Button, Spinner } from '@voximplant/spaceui';
 
   export default defineComponent({
-    components: { Button, Spinner },
+    components: { Button },
     emit: ['update:modelValue'],
     setup(props, { emit }) {
-      const hangup = () => {
-        emit('update:cancelBtn');
+      const redial = () => {
+        emit('update:callBtn');
       };
       return {
-        hangup,
+        redial,
       };
     },
   });
 </script>
 
 <style scoped>
-  .connection {
+  .redial-call {
     position: relative;
     height: 300px;
     margin: 30px auto;
@@ -34,12 +32,7 @@
     align-items: center;
     justify-content: space-between;
   }
-  .state {
-    display: flex;
-    flex-direction: row;
-    margin-bottom: 30px;
-  }
   .text {
-    margin-left: 10px;
+    font-family: Roboto;
   }
 </style>
