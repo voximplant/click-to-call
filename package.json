@@ -9,13 +9,14 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "@voximplant/spaceui": "latest",
+    "@voximplant/spaceui": "^1.7.0",
     "core-js": "^3.6.5",
     "effector": "^21.8.11",
     "effector-vue": "^21.1.1",
     "postcss-custom-media": "^7.0.8",
     "postcss-nested": "^4.2.3",
     "postcss-preset-env": "^6.7.0",
+    "voximplant-websdk": "^4.5.0-2227",
     "vue": "^3.0.0",
     "vue-class-component": "^8.0.0-0",
     "vue-router": "^4.0.0-0"
