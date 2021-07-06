@@ -1,6 +1,6 @@
 <template lang="pug">
 .start-zi-call
-  Button(@click="startZiCall") StartZiCall
+  Button(@click="startCall") Call
 </template>
 
 <script lang="ts">
@@ -10,11 +10,11 @@
   export default defineComponent({
     components: { Button },
     setup() {
-      const startZiCall = () => {
-        window.open(window.location.href);
+      const startCall = () => {
+        window.open(`${window.location.href}call`);
       };
       return {
-        startZiCall,
+        startCall,
       };
     },
   });

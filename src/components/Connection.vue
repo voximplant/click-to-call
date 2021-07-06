@@ -12,7 +12,7 @@
 
   export default defineComponent({
     components: { Button, Spinner },
-    emit: ['update:modelValue'],
+    emit: ['update:cancelBtn'],
     setup(props, { emit }) {
       const hangup = () => {
         emit('update:cancelBtn');
@@ -32,12 +32,11 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-between;
   }
   .state {
     display: flex;
     flex-direction: row;
-    margin-bottom: 30px;
+    margin-bottom: 12px;
   }
   .text {
     margin-left: 10px;

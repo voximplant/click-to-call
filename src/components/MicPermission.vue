@@ -1,5 +1,5 @@
 <template lang="pug">
-.mic-permission(v-if="!isMicAccessGranted")
+.mic-permission
   .awaiting-stripe
     .sliding
   .mic-image
@@ -7,43 +7,9 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, onMounted, ref } from 'vue';
-  import * as VoxImplant from 'voximplant-websdk';
+  import { defineComponent } from 'vue';
 
-  export default defineComponent({
-    setup() {
-      const sdk = VoxImplant.getInstance();
-      sdk
-        .init({
-          micRequired: true,
-          progressTone: true,
-          progressToneCountry: 'US',
-        })
-        .then(() => sdk.connect(false))
-        .then(() => sdk.login(process.env.VUE_APP_USER, process.env.VUE_APP_PASSWORD))
-        .then(() => {
-          sdk.call({ number: '444', video: { sendVideo: false, receiveVideo: false } });
-        });
-      const isMicAccessGranted = ref(false);
-      onMounted(async () => {
-        const result = await navigator.permissions.query({ name: 'microphone' });
-        if (result.state === 'granted') {
-          isMicAccessGranted.value = true;
-        } else {
-          result.onchange = (e) => {
-            if (result.state === 'granted') {
-              isMicAccessGranted.value = true;
-            }
-          };
-          isMicAccessGranted.value = false;
-        }
-      });
-
-      return {
-        isMicAccessGranted,
-      };
-    },
-  });
+  export default defineComponent({});
 </script>
 
 <style scoped>

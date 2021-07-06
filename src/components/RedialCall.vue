@@ -10,7 +10,7 @@
 
   export default defineComponent({
     components: { Button },
-    emit: ['update:modelValue'],
+    emit: ['update:callBtn'],
     setup(props, { emit }) {
       const redial = () => {
         emit('update:callBtn');
@@ -30,9 +30,9 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-between;
   }
   .text {
     font-family: Roboto;
+    margin-bottom: 12px;
   }
 </style>

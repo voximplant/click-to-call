@@ -1,14 +1,14 @@
 <template lang="pug">
 .home
-  StartZiCallBtn
+  StartCallBtn
 </template>
 
 <script lang="ts">
   import { defineComponent } from 'vue';
-  import StartZiCallBtn from '@/components/StartZiCallBtn.vue';
+  import StartCallBtn from '@/components/StartCallBtn.vue';
   export default defineComponent({
     components: {
-      StartZiCallBtn,
+      StartCallBtn,
     },
   });
 </script>
