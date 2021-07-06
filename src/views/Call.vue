@@ -7,6 +7,7 @@ MicPermission(v-if="!isMicAccessGranted")
   Settings(v-if="showSettings" @update:closeSettings="showSettings=false")
   Connection(v-if="callState===CallState.CONNECTING" @update:cancelBtn="disconnect")
   RedialCall(v-if="callState===CallState.DISCONNECTED" @update:callBtn="createCall")
+  DtmfKeyboard(v-if="callState===CallState.CONNECTED" @update:digit="sendDigit")
 </template>
 
 <script lang="ts">
@@ -19,9 +20,11 @@ MicPermission(v-if="!isMicAccessGranted")
   import RedialCall from '@/components/RedialCall.vue';
   import MicPermission from '@/components/MicPermission.vue';
   import Settings from '@/components/Settings.vue';
+  import DtmfKeyboard from '@/components/DtmfKeyboard.vue';
 
   export default defineComponent({
     components: {
+      DtmfKeyboard,
       Settings,
       MicPermission,
       RedialCall,
@@ -40,7 +43,7 @@ MicPermission(v-if="!isMicAccessGranted")
           createCall();
         });
       const disconnect = () => {
-        call && call.hangup();
+        call?.hangup();
       };
 
       const createCall = () => {
@@ -75,6 +78,10 @@ MicPermission(v-if="!isMicAccessGranted")
         }
       });
       const showSettings = ref(false);
+
+      const sendDigit = (digit: string) => {
+        call?.sendTone(digit);
+      };
       return {
         callState,
         CallState,
@@ -82,6 +89,7 @@ MicPermission(v-if="!isMicAccessGranted")
         disconnect,
         isMicAccessGranted,
         showSettings,
+        sendDigit,
       };
     },
   });
@@ -92,12 +100,13 @@ MicPermission(v-if="!isMicAccessGranted")
     position: relative;
     margin: 0 auto 0 auto;
     width: 210px;
-    height: 200px;
     display: flex;
     flex-direction: column;
+    align-items: center;
   }
   .settings {
-    width: 100%;
-    display: flex;
+    & .sui-button {
+      margin: 0 2px;
+    }
   }
 </style>
