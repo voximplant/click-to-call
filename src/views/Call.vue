@@ -3,8 +3,9 @@ MicPermission(v-if="!isMicAccessGranted")
 .call(v-else="isMicAccessGranted")
   .settings
     Button(size="s" mode="secondary" icon="ic20-settings" @click="showSettings=true") Settings
-    Button(size="s" mode="secondary" icon="ic20-mic") Checking
+    Button(size="s" mode="secondary" icon="ic20-mic" @click="checkingMic=true") Checking
   Settings(v-if="showSettings" @update:closeSettings="showSettings=false")
+  CheckingMic(v-if="checkingMic" @update:checking="checkingMic=false" :sdk="sdk")
   Connection(v-if="callState===CallState.CONNECTING" @update:cancelBtn="disconnect")
   RedialCall(v-if="callState===CallState.DISCONNECTED" @update:callBtn="createCall")
   DtmfKeyboard(v-if="callState===CallState.CONNECTED" @update:digit="sendDigit")
@@ -21,9 +22,11 @@ MicPermission(v-if="!isMicAccessGranted")
   import MicPermission from '@/components/MicPermission.vue';
   import Settings from '@/components/Settings.vue';
   import DtmfKeyboard from '@/components/DtmfKeyboard.vue';
+  import CheckingMic from '@/components/CheckingMic.vue';
 
   export default defineComponent({
     components: {
+      CheckingMic,
       DtmfKeyboard,
       Settings,
       MicPermission,
@@ -48,7 +51,7 @@ MicPermission(v-if="!isMicAccessGranted")
 
       const createCall = () => {
         call = sdk.call({
-          number: '79773203997',
+          number: 'olya',
           video: { sendVideo: false, receiveVideo: false },
         });
         callState.value = CallState.CONNECTING;
@@ -78,10 +81,11 @@ MicPermission(v-if="!isMicAccessGranted")
         }
       });
       const showSettings = ref(false);
-
+      const checkingMic = ref(false);
       const sendDigit = (digit: string) => {
         call?.sendTone(digit);
       };
+
       return {
         callState,
         CallState,
@@ -89,7 +93,9 @@ MicPermission(v-if="!isMicAccessGranted")
         disconnect,
         isMicAccessGranted,
         showSettings,
+        checkingMic,
         sendDigit,
+        sdk,
       };
     },
   });
