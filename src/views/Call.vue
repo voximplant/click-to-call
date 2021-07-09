@@ -15,6 +15,10 @@ MicPermission(v-if="!isMicAccessGranted")
     .microphone(@click="toggleMic")
       .muted(v-if="muted")
       .unmuted(v-else="!muted")
+    .connection-rate(v-if="callState===CallState.CONNECTED")
+      .stripe-high(:class="connectionRate")
+      .stripe-medium(:class="connectionRate")
+      .stripe-low(:class="connectionRate")
   .footer
     .help
       a(href="https://voximplant.com" id="help") Help
@@ -50,6 +54,7 @@ MicPermission(v-if="!isMicAccessGranted")
     setup() {
       const callState = ref('');
       const muted = ref(false);
+      const connectionRate = ref('high');
       const sdk = VoxImplant.getInstance();
       const call = ref<Call | null>(null);
       sdk
@@ -82,6 +87,19 @@ MicPermission(v-if="!isMicAccessGranted")
         });
         call.value.on(VoxImplant.CallEvents.Failed, () => {
           callState.value = CallState.DISCONNECTED;
+        });
+        call.value.on(VoxImplant.CallEvents.CallStatsReceived, (e) => {
+          console.warn('CallStatsReceived', e.stats);
+          if (e.stats.totalLoss <= 0.01) {
+            connectionRate.value = 'high';
+          } else if (e.stats.totalLoss <= 0.02) {
+            connectionRate.value = 'medium';
+          } else {
+            connectionRate.value = 'low';
+          }
+        });
+        call.value.on(VoxImplant.CallEvents.QualityIssueHighMediaLatency, (e: any) => {
+          console.warn('QualityIssueHighMediaLatency', e);
         });
       };
 
@@ -126,6 +144,7 @@ MicPermission(v-if="!isMicAccessGranted")
         sendDigit,
         sdk,
         call,
+        connectionRate,
       };
     },
   });
@@ -156,13 +175,21 @@ MicPermission(v-if="!isMicAccessGranted")
     position: relative;
     height: 300px;
     width: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
   }
   .controls {
     position: relative;
     height: 52px;
     width: 168px;
-    padding: 6px 16px;
     box-sizing: border-box;
+    display: flex;
+    justify-content: flex-start;
+  }
+  .microphone {
+    margin: 6px 8px;
+    width: 40px;
   }
   .muted {
     width: 40px;
@@ -173,6 +200,60 @@ MicPermission(v-if="!isMicAccessGranted")
     width: 40px;
     height: 40px;
     background-image: url('../assets/unmuted.svg');
+  }
+  .connection-rate {
+    position: relative;
+    overflow: hidden;
+    width: 40px;
+    height: 40px;
+    margin: 6px 8px;
+    box-sizing: border-box;
+    transform: rotate(45deg);
+    top: -10px;
+  }
+  .stripe-high {
+    width: 80px;
+    height: 80px;
+    border: solid white 6px;
+    border-radius: 50%;
+    position: absolute;
+    box-sizing: border-box;
+  }
+  .stripe-high.medium,
+  .stripe-high.low {
+    background-color: grey;
+  }
+  .stripe-medium {
+    width: 56px;
+    height: 56px;
+    border: solid white 6px;
+    border-radius: 50%;
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    box-sizing: border-box;
+  }
+  .stripe-medium.low {
+    background-color: grey;
+  }
+  .stripe-low {
+    width: 32px;
+    height: 32px;
+    border: solid white 6px;
+    border-radius: 50%;
+    position: absolute;
+    top: 24px;
+    left: 24px;
+    box-sizing: border-box;
+  }
+  .high {
+    background-color: #2fbc4f;
+  }
+  .medium {
+    background-color: #fadb14;
+  }
+  .low {
+    background-color: #f5222d;
   }
   .footer {
     position: relative;
@@ -187,7 +268,6 @@ MicPermission(v-if="!isMicAccessGranted")
   #help {
     background-image: url('../assets/question-mark.svg');
     background-repeat: no-repeat;
-
     line-height: 20px;
     padding-left: 20px;
   }

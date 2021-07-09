@@ -1,7 +1,7 @@
 <template lang="pug">
 .redial-call
   .text Press the button to call
-  Button(icon="ic20-phone" @click="redial") Call
+  Button.call(icon="ic20-phone" @click="redial") Call
 </template>
 
 <script lang="ts">
@@ -32,6 +32,15 @@
   }
   .text {
     font-family: Roboto, sans-serif;
+    height: 22px;
     margin-bottom: 24px;
+  }
+  .call {
+    & .sui-button {
+      & .only-icon {
+        --sui-icon-color: white;
+        margin-right: 4px;
+      }
+    }
   }
 </style>

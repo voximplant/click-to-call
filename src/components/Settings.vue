@@ -1,6 +1,5 @@
 <template lang="pug">
 teleport(to=".call")
-  .background
   .settings
     .close(@click="closeSettings")
     .text Select microphone
@@ -54,14 +53,6 @@ teleport(to=".call")
 </script>
 
 <style scoped>
-  .background {
-    position: absolute;
-    background-color: #ffffff;
-    opacity: 0.3;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-  }
   .settings {
     background-color: #ffffff;
     position: absolute;

@@ -28,7 +28,6 @@
   .dtmf-keyboard {
     width: 168px;
     height: 208px;
-    margin: 12px auto;
   }
   .digits {
     position: relative;

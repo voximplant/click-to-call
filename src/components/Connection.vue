@@ -36,6 +36,7 @@
   .state {
     display: flex;
     flex-direction: row;
+    height: 22px;
     margin-bottom: 24px;
   }
   .text {

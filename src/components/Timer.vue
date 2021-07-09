@@ -22,6 +22,7 @@
       const startTimer = () => {
         let time = 0;
         const second = 1;
+        currentTime.value = '00:00:00';
         interval = setInterval(() => {
           time = time + second;
           const hours = Math.floor(time / 3600);
@@ -46,8 +47,8 @@
 
 <style scoped>
   .timer {
-    width: 50px;
-    height: 30px;
+    width: 70px;
+    height: 20px;
     margin: 12px auto;
   }
 </style>
