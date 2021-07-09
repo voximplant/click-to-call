@@ -5,6 +5,7 @@ MicPermission(v-if="!isMicAccessGranted")
     Button(size="s" mode="secondary" icon="ic20-settings" @click="showSettings=true") Settings
     Button(size="s" mode="secondary" icon="ic20-mic" @click="checkingOpened=true") Checking
   .call-state
+    Timer(:callState="callState")
     Settings(v-if="showSettings" @update:closeSettings="showSettings=false" :call="call")
     CheckingMic(v-if="checkingOpened" @update:checking="checkingOpened=false" :sdk="sdk")
     Connection(v-if="callState===CallState.CONNECTING" @update:cancelBtn="disconnect")
@@ -33,9 +34,11 @@ MicPermission(v-if="!isMicAccessGranted")
   import Settings from '@/components/Settings.vue';
   import DtmfKeyboard from '@/components/DtmfKeyboard.vue';
   import CheckingMic from '@/components/CheckingMic.vue';
+  import Timer from '@/components/Timer.vue';
 
   export default defineComponent({
     components: {
+      Timer,
       CheckingMic,
       DtmfKeyboard,
       Settings,
