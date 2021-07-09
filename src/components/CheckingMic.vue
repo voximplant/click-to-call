@@ -16,6 +16,7 @@
     setup(props, { emit }) {
       const message = ref('Connection with service...');
       const btnName = ref('Cancel');
+      let totalPacketLost = 0;
       let call: Call | null = null;
       const createTestCall = () => {
         const sdk = props.sdk;
@@ -27,10 +28,11 @@
           btnName.value = 'Close';
         });
         call?.on(VoxImplant.CallEvents.MessageReceived, (e: any) => {
-          message.value = `All works! Here is the record ${e.text}`;
+          message.value = `All works! Total packet lost is ${totalPacketLost}%. Here is the record ${e.text}`;
         });
-        call?.on(VoxImplant.CallEvents.QualityIssuePacketLoss, (e: any) => {
-          console.log('Stats: ', e);
+        call?.on(VoxImplant.CallEvents.CallStatsReceived, (e: any) => {
+          console.log('Stats: ', e.stats.totalPacketsLost);
+          totalPacketLost = e.stats.totalPacketsLost;
         });
       };
       createTestCall();
@@ -60,10 +62,11 @@
     max-width: 300px;
     min-height: 100px;
     overflow-wrap: anywhere;
-    background-color: #ecddff;
+    background-color: #ffffff;
     border-radius: 5%;
     padding: 12px 16px;
-    font-family: Roboto;
+    font-family: Roboto, sans-serif;
+    box-shadow: 0 2px 8px rgba(40, 41, 61, 0.04), 0 16px 24px rgba(96, 97, 112, 0.16);
   }
   .checking-mic:after {
     content: '';
@@ -72,7 +75,7 @@
     left: 70%;
     border-width: 10px;
     border-style: solid;
-    border-color: transparent transparent #ecddff transparent;
+    border-color: transparent transparent #ffffff transparent;
   }
   .close {
     position: relative;

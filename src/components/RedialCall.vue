@@ -25,14 +25,13 @@
 <style scoped>
   .redial-call {
     position: relative;
-    height: 300px;
-    margin: 30px auto;
+    margin: 32px auto;
     display: flex;
     flex-direction: column;
     align-items: center;
   }
   .text {
-    font-family: Roboto;
-    margin-bottom: 12px;
+    font-family: Roboto, sans-serif;
+    margin-bottom: 24px;
   }
 </style>

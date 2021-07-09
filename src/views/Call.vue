@@ -1,14 +1,24 @@
 <template lang="pug">
 MicPermission(v-if="!isMicAccessGranted")
 .call(v-else="isMicAccessGranted")
-  .settings
+  .settings-panel
     Button(size="s" mode="secondary" icon="ic20-settings" @click="showSettings=true") Settings
-    Button(size="s" mode="secondary" icon="ic20-mic" @click="checkingMic=true") Checking
-  Settings(v-if="showSettings" @update:closeSettings="showSettings=false")
-  CheckingMic(v-if="checkingMic" @update:checking="checkingMic=false" :sdk="sdk")
-  Connection(v-if="callState===CallState.CONNECTING" @update:cancelBtn="disconnect")
-  RedialCall(v-if="callState===CallState.DISCONNECTED" @update:callBtn="createCall")
-  DtmfKeyboard(v-if="callState===CallState.CONNECTED" @update:digit="sendDigit")
+    Button(size="s" mode="secondary" icon="ic20-mic" @click="checkingOpened=true") Checking
+  .call-state
+    Settings(v-if="showSettings" @update:closeSettings="showSettings=false" :call="call")
+    CheckingMic(v-if="checkingOpened" @update:checking="checkingOpened=false" :sdk="sdk")
+    Connection(v-if="callState===CallState.CONNECTING" @update:cancelBtn="disconnect")
+    RedialCall(v-if="callState===CallState.DISCONNECTED" @update:callBtn="createCall")
+    DtmfKeyboard(v-if="callState===CallState.CONNECTED" @update:digit="sendDigit" @update:hangup="disconnect")
+  .controls
+    .microphone(@click="toggleMic")
+      .muted(v-if="muted")
+      .unmuted(v-else="!muted")
+  .footer
+    .help
+      a(href="https://voximplant.com" id="help") Help
+    .voxlink
+      a(href="https://voximplant.com") voximplant.com
 </template>
 
 <script lang="ts">
@@ -36,32 +46,38 @@ MicPermission(v-if="!isMicAccessGranted")
     },
     setup() {
       const callState = ref('');
+      const muted = ref(false);
       const sdk = VoxImplant.getInstance();
-      let call: Call | null = null;
+      const call = ref<Call | null>(null);
       sdk
-        .init({ micRequired: true, progressTone: true, progressToneCountry: 'US' })
+        .init({
+          micRequired: true,
+          showDebugInfo: true,
+          progressTone: true,
+          progressToneCountry: 'US',
+        })
         .then(() => sdk.connect(false))
         .then(() => sdk.login(process.env.VUE_APP_USER, process.env.VUE_APP_PASSWORD))
         .then(() => {
           createCall();
         });
       const disconnect = () => {
-        call?.hangup();
+        call.value?.hangup();
       };
 
       const createCall = () => {
-        call = sdk.call({
+        call.value = sdk.call({
           number: 'olya',
           video: { sendVideo: false, receiveVideo: false },
         });
         callState.value = CallState.CONNECTING;
-        call.on(VoxImplant.CallEvents.Connected, () => {
+        call.value.on(VoxImplant.CallEvents.Connected, () => {
           callState.value = CallState.CONNECTED;
         });
-        call.on(VoxImplant.CallEvents.Disconnected, () => {
+        call.value.on(VoxImplant.CallEvents.Disconnected, () => {
           callState.value = CallState.DISCONNECTED;
         });
-        call.on(VoxImplant.CallEvents.Failed, () => {
+        call.value.on(VoxImplant.CallEvents.Failed, () => {
           callState.value = CallState.DISCONNECTED;
         });
       };
@@ -81,21 +97,32 @@ MicPermission(v-if="!isMicAccessGranted")
         }
       });
       const showSettings = ref(false);
-      const checkingMic = ref(false);
+      const checkingOpened = ref(false);
       const sendDigit = (digit: string) => {
-        call?.sendTone(digit);
+        call.value?.sendTone(digit);
       };
-
+      const toggleMic = () => {
+        if (muted.value) {
+          muted.value = false;
+          call.value?.unmuteMicrophone();
+        } else {
+          muted.value = true;
+          call.value?.muteMicrophone();
+        }
+      };
       return {
+        muted,
+        toggleMic,
         callState,
         CallState,
         createCall,
         disconnect,
         isMicAccessGranted,
         showSettings,
-        checkingMic,
+        checkingOpened,
         sendDigit,
         sdk,
+        call,
       };
     },
   });
@@ -105,14 +132,60 @@ MicPermission(v-if="!isMicAccessGranted")
   .call {
     position: relative;
     margin: 0 auto 0 auto;
-    width: 210px;
+    width: 376px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(40, 41, 61, 0.04), 0 16px 24px rgba(96, 97, 112, 0.16);
   }
-  .settings {
-    & .sui-button {
-      margin: 0 2px;
-    }
+  .settings-panel {
+    display: flex;
+    justify-content: space-around;
+    position: relative;
+    width: 100%;
+    background-color: #662eff;
+    padding: 12px 16px;
+    border-radius: 8px 8px 0 0;
+    box-sizing: border-box;
+  }
+  .call-state {
+    position: relative;
+    height: 300px;
+    width: 100%;
+  }
+  .controls {
+    position: relative;
+    height: 52px;
+    width: 168px;
+    padding: 6px 16px;
+    box-sizing: border-box;
+  }
+  .muted {
+    width: 40px;
+    height: 40px;
+    background-image: url('../assets/muted.svg');
+  }
+  .unmuted {
+    width: 40px;
+    height: 40px;
+    background-image: url('../assets/unmuted.svg');
+  }
+  .footer {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    width: 376px;
+    padding: 12px 16px;
+    border-top: #e3e4eb solid 1px;
+    font-size: 14px;
+    box-sizing: border-box;
+  }
+  #help {
+    background-image: url('../assets/question-mark.svg');
+    background-repeat: no-repeat;
+
+    line-height: 20px;
+    padding-left: 20px;
   }
 </style>

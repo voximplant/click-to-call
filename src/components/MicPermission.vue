@@ -47,22 +47,22 @@
     height: 160px;
     background-image: url('../assets/mic.png');
     border-radius: 50%;
-    -webkit-box-shadow: #25104f 0 0 30px;
+    -webkit-box-shadow: #662eff 0 0 30px;
     -webkit-animation: pulse 2.5s infinite;
   }
   @keyframes pulse {
     0% {
-      -webkit-box-shadow: #25104f 0 0 10px;
+      -webkit-box-shadow: #662eff 0 0 10px;
     }
     50% {
-      -webkit-box-shadow: #25104f 0 0 50px;
+      -webkit-box-shadow: #662eff 0 0 50px;
     }
     100% {
-      -webkit-box-shadow: #25104f 0 0 10px;
+      -webkit-box-shadow: #662eff 0 0 10px;
     }
   }
   .allow-text {
-    font-family: Roboto;
+    font-family: Roboto, sans-serif;
     margin-top: 30px;
   }
 </style>

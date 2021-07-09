@@ -28,7 +28,7 @@
   .connection {
     position: relative;
     height: 300px;
-    margin: 30px auto;
+    margin: 32px auto;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -36,7 +36,7 @@
   .state {
     display: flex;
     flex-direction: row;
-    margin-bottom: 12px;
+    margin-bottom: 24px;
   }
   .text {
     margin-left: 10px;
