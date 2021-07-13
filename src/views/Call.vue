@@ -11,11 +11,11 @@ MicPermission(v-if="!isMicAccessGranted" :accessDenied="accessDenied")
     Connection(v-if="callState===CallState.CONNECTING" @update:cancelBtn="disconnect")
     RedialCall(v-if="callState===CallState.DISCONNECTED" @update:callBtn="createCall")
     DtmfKeyboard(v-if="callState===CallState.CONNECTED" @update:digit="sendDigit" @update:hangup="disconnect")
-  .controls
+  .controls(v-if="callState===CallState.CONNECTED")
     .microphone(@click="toggleMic")
       .muted(v-if="muted")
       .unmuted(v-else="!muted")
-    .connection-rate(v-if="callState===CallState.CONNECTED")
+    .connection-rate
       .stripe-high(:class="connectionRate")
       .stripe-medium(:class="connectionRate")
       .stripe-low(:class="connectionRate")
