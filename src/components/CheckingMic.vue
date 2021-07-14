@@ -2,6 +2,7 @@
 .checking-mic
   Timer(:callState="callState" v-if="callState !== CallState.DISCONNECTED")
   .text {{ message }}
+    a(:href="record" target="_blank" v-if="record") {{ record }}
   Button.close(mode="flat" @click="stopChecking") {{ btnName }}
 </template>
 
@@ -19,6 +20,7 @@
     props: ['sdk'],
     setup(props, { emit }) {
       const message = ref('Connection with service...');
+      const record = ref('');
       const callState = ref('');
       const btnName = ref('Cancel');
       let totalPacketLost = 0;
@@ -35,7 +37,8 @@
           btnName.value = 'Close';
         });
         call?.on(VoxImplant.CallEvents.MessageReceived, (e: any) => {
-          message.value = `All works! Total packet lost is ${totalPacketLost}%. Here is the record ${e.text}`;
+          message.value = `All works! Total packet lost is ${totalPacketLost}%. Here is the record: `;
+          record.value = e.text;
         });
         call?.on(VoxImplant.CallEvents.CallStatsReceived, (e: any) => {
           totalPacketLost = e.stats.totalPacketsLost;
@@ -53,6 +56,7 @@
         btnName,
         callState,
         CallState,
+        record,
       };
     },
   });

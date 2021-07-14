@@ -135,6 +135,7 @@ MicPermission(v-if="!isMicAccessGranted" :accessDenied="accessDenied")
           call.value?.muteMicrophone();
         }
       };
+
       return {
         muted,
         toggleMic,
