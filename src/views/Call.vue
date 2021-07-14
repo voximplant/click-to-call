@@ -57,9 +57,18 @@ MicPermission(v-if="!isMicAccessGranted" :accessDenied="accessDenied")
       const muted = ref<boolean>(false);
       const connectionRate = ref<string>('high');
       const accessDenied = ref<boolean>(false);
+      const isMicAccessGranted = ref<boolean>(false);
+      onMounted(async () => {
+        const audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        if (audioStream) {
+          isMicAccessGranted.value = true;
+        }
+      });
       const sdk = VoxImplant.getInstance();
       sdk.on(VoxImplant.Events.MicAccessResult, (e) => {
-        if (e.result === false) {
+        if (e.result === true) {
+          isMicAccessGranted.value = true;
+        } else {
           accessDenied.value = true;
         }
       });
@@ -108,21 +117,6 @@ MicPermission(v-if="!isMicAccessGranted" :accessDenied="accessDenied")
           console.warn('QualityIssueHighMediaLatency', e);
         });
       };
-
-      const isMicAccessGranted = ref<boolean>(false);
-      onMounted(async () => {
-        const result = await navigator.permissions.query({ name: 'microphone' });
-        if (result.state === 'granted') {
-          isMicAccessGranted.value = true;
-        } else {
-          result.onchange = () => {
-            if (result.state === 'granted') {
-              isMicAccessGranted.value = true;
-            }
-          };
-          isMicAccessGranted.value = false;
-        }
-      });
       const showSettings = ref<boolean>(false);
       const checkingOpened = ref<boolean>(false);
       const sendDigit = (digit: string) => {
