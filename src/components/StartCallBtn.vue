@@ -11,7 +11,11 @@
     components: { Button },
     setup() {
       const startCall = () => {
-        window.open(`${window.location.href}call`);
+        window.open(
+          `${window.location.href}call`,
+          '_blank',
+          'width=800,height=600,resizable=no,toolbar=no,menubar=no,location=no,status=no'
+        );
       };
       return {
         startCall,
