@@ -1,15 +1,28 @@
 <template lang="pug">
+.blocked-access(v-if="blockedAccess")
 .mic-permission
-  .awaiting-stripe
+  .awaiting-stripe(:style="{width:windowsize}")
     .sliding
   .mic-image
-  .allow-text Please allow access to your microphone for making a call online
+  .allow-text(v-if="!blockedAccess") Please allow access to your microphone for making a call online
 </template>
 
 <script lang="ts">
-  import { defineComponent } from 'vue';
-
-  export default defineComponent({});
+  import { defineComponent, toRef, ref } from 'vue';
+  export default defineComponent({
+    props: ['accessDenied'],
+    setup(props) {
+      const windowsize = ref(window.innerWidth + 'px');
+      window.onresize = () => {
+        windowsize.value = window.innerWidth + 'px';
+      };
+      const blockedAccess = toRef(props, 'accessDenied');
+      return {
+        blockedAccess,
+        windowsize,
+      };
+    },
+  });
 </script>
 
 <style scoped>
@@ -17,12 +30,13 @@
     position: absolute;
     top: 0;
     height: 30px;
-    width: 100%;
-    background-color: #25104f;
+    background-color: #662eff;
+    overflow-x: hidden;
   }
   .sliding {
     position: relative;
-    height: 100%;
+    height: 30px;
+    width: 1000px;
     background-image: linear-gradient(to right, transparent, #f2f2f5, transparent);
     -webkit-animation: slide 2.5s infinite;
   }
@@ -64,5 +78,13 @@
   .allow-text {
     font-family: Roboto, sans-serif;
     margin-top: 30px;
+  }
+  .blocked-access {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    z-index: 12;
+    opacity: 0.5;
   }
 </style>

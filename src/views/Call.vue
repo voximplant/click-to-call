@@ -1,5 +1,5 @@
 <template lang="pug">
-MicPermission(v-if="!isMicAccessGranted")
+MicPermission(v-if="!isMicAccessGranted" :accessDenied="accessDenied")
 .call(v-else="isMicAccessGranted")
   .settings-panel
     Button(size="s" mode="secondary" icon="ic20-settings" @click="showSettings=true") Settings
@@ -55,12 +55,17 @@ MicPermission(v-if="!isMicAccessGranted")
       const callState = ref('');
       const muted = ref(false);
       const connectionRate = ref('high');
+      const accessDenied = ref(false);
       const sdk = VoxImplant.getInstance();
+      sdk.on(VoxImplant.Events.MicAccessResult, (e) => {
+        if (e.result === false) {
+          accessDenied.value = true;
+        }
+      });
       const call = ref<Call | null>(null);
       sdk
         .init({
           micRequired: true,
-          showDebugInfo: true,
           progressTone: true,
           progressToneCountry: 'US',
         })
@@ -89,7 +94,6 @@ MicPermission(v-if="!isMicAccessGranted")
           callState.value = CallState.DISCONNECTED;
         });
         call.value.on(VoxImplant.CallEvents.CallStatsReceived, (e) => {
-          console.warn('CallStatsReceived', e.stats);
           if (e.stats.totalLoss <= 0.01) {
             connectionRate.value = 'high';
           } else if (e.stats.totalLoss <= 0.02) {
@@ -139,6 +143,7 @@ MicPermission(v-if="!isMicAccessGranted")
         createCall,
         disconnect,
         isMicAccessGranted,
+        accessDenied,
         showSettings,
         checkingOpened,
         sendDigit,
@@ -153,13 +158,11 @@ MicPermission(v-if="!isMicAccessGranted")
 <style scoped>
   .call {
     position: relative;
-    margin: 0 auto 0 auto;
+    margin: 0 auto;
     width: 376px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(40, 41, 61, 0.04), 0 16px 24px rgba(96, 97, 112, 0.16);
   }
   .settings-panel {
     display: flex;
