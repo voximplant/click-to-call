@@ -3,7 +3,7 @@
   .state
     Spinner(size="l")
     .text Connection...
-  Button(@click="hangup") Cancel
+  Button(icon="ic20-close" @click="hangup") Cancel
 </template>
 
 <script lang="ts">
@@ -32,6 +32,10 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    & >>> .sui-icon {
+      --sui-icon-color: #ffffff !important;
+      margin-right: 4px;
+    }
   }
   .state {
     display: flex;

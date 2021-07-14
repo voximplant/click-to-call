@@ -13,17 +13,18 @@
   import { Call } from 'voximplant-websdk/Call/Call';
   import Timer from '@/components/Timer.vue';
   import { CallState } from '@/enums/CallState';
+  import { EventHandlers } from 'voximplant-websdk/EventHandlers';
 
   export default defineComponent({
     components: { Timer, Button },
     emit: ['update:checking'],
     props: ['sdk'],
     setup(props, { emit }) {
-      const message = ref('Connection with service...');
-      const record = ref('');
-      const callState = ref('');
-      const btnName = ref('Cancel');
-      let totalPacketLost = 0;
+      const message = ref<string>('Connection with service...');
+      const callState = ref<string>('');
+      const btnName = ref<string>('Cancel');
+      const record = ref<string>('');
+      let totalPacketLost: number | undefined = 0;
       let call: Call | null = null;
       const createTestCall = () => {
         const sdk = props.sdk;
@@ -36,11 +37,11 @@
           callState.value = CallState.DISCONNECTED;
           btnName.value = 'Close';
         });
-        call?.on(VoxImplant.CallEvents.MessageReceived, (e: any) => {
+        call?.on(VoxImplant.CallEvents.MessageReceived, (e: EventHandlers.MessageReceived) => {
           message.value = `All works! Total packet lost is ${totalPacketLost}%. Here is the record: `;
           record.value = e.text;
         });
-        call?.on(VoxImplant.CallEvents.CallStatsReceived, (e: any) => {
+        call?.on(VoxImplant.CallEvents.CallStatsReceived, (e: EventHandlers.CallStatsReceived) => {
           totalPacketLost = e.stats.totalPacketsLost;
         });
       };

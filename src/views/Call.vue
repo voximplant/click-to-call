@@ -10,11 +10,12 @@ MicPermission(v-if="!isMicAccessGranted" :accessDenied="accessDenied")
     CheckingMic(v-if="checkingOpened" @update:checking="checkingOpened=false" :sdk="sdk")
     Connection(v-if="callState===CallState.CONNECTING" @update:cancelBtn="disconnect")
     RedialCall(v-if="callState===CallState.DISCONNECTED" @update:callBtn="createCall")
-    DtmfKeyboard(v-if="callState===CallState.CONNECTED" @update:digit="sendDigit" @update:hangup="disconnect")
+    DtmfKeyboard(v-if="callState===CallState.CONNECTED" @update:digit="sendDigit")
   .controls(v-if="callState===CallState.CONNECTED")
     .microphone(@click="toggleMic")
       .muted(v-if="muted")
       .unmuted(v-else="!muted")
+    .hangup(@click="disconnect")
     .connection-rate
       .stripe-high(:class="connectionRate")
       .stripe-medium(:class="connectionRate")
@@ -52,10 +53,10 @@ MicPermission(v-if="!isMicAccessGranted" :accessDenied="accessDenied")
       Button,
     },
     setup() {
-      const callState = ref('');
-      const muted = ref(false);
-      const connectionRate = ref('high');
-      const accessDenied = ref(false);
+      const callState = ref<string>('');
+      const muted = ref<boolean>(false);
+      const connectionRate = ref<string>('high');
+      const accessDenied = ref<boolean>(false);
       const sdk = VoxImplant.getInstance();
       sdk.on(VoxImplant.Events.MicAccessResult, (e) => {
         if (e.result === false) {
@@ -66,6 +67,7 @@ MicPermission(v-if="!isMicAccessGranted" :accessDenied="accessDenied")
       sdk
         .init({
           micRequired: true,
+          showDebugInfo: true,
           progressTone: true,
           progressToneCountry: 'US',
         })
@@ -107,7 +109,7 @@ MicPermission(v-if="!isMicAccessGranted" :accessDenied="accessDenied")
         });
       };
 
-      const isMicAccessGranted = ref(false);
+      const isMicAccessGranted = ref<boolean>(false);
       onMounted(async () => {
         const result = await navigator.permissions.query({ name: 'microphone' });
         if (result.state === 'granted') {
@@ -121,8 +123,8 @@ MicPermission(v-if="!isMicAccessGranted" :accessDenied="accessDenied")
           isMicAccessGranted.value = false;
         }
       });
-      const showSettings = ref(false);
-      const checkingOpened = ref(false);
+      const showSettings = ref<boolean>(false);
+      const checkingOpened = ref<boolean>(false);
       const sendDigit = (digit: string) => {
         call.value?.sendTone(digit);
       };
@@ -135,7 +137,6 @@ MicPermission(v-if="!isMicAccessGranted" :accessDenied="accessDenied")
           call.value?.muteMicrophone();
         }
       };
-
       return {
         muted,
         toggleMic,
@@ -161,6 +162,7 @@ MicPermission(v-if="!isMicAccessGranted" :accessDenied="accessDenied")
     position: relative;
     margin: 0 auto;
     width: 376px;
+    height: 410px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -174,10 +176,15 @@ MicPermission(v-if="!isMicAccessGranted" :accessDenied="accessDenied")
     padding: 12px 16px;
     border-radius: 8px 8px 0 0;
     box-sizing: border-box;
+
+    & >>> .sui-icon {
+      --sui-icon-color: #555770 !important;
+      margin-right: 2px;
+    }
   }
   .call-state {
     position: relative;
-    height: 300px;
+    height: 252px;
     width: 100%;
     display: flex;
     align-items: center;
@@ -204,6 +211,13 @@ MicPermission(v-if="!isMicAccessGranted" :accessDenied="accessDenied")
     width: 40px;
     height: 40px;
     background-image: url('../assets/unmuted.svg');
+  }
+  .hangup {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    margin: 6px auto;
+    background-image: url('../assets/decline.png');
   }
   .connection-rate {
     position: relative;
@@ -260,7 +274,8 @@ MicPermission(v-if="!isMicAccessGranted" :accessDenied="accessDenied")
     background-color: #f5222d;
   }
   .footer {
-    position: relative;
+    position: absolute;
+    top: 365px;
     display: flex;
     justify-content: space-between;
     width: 376px;

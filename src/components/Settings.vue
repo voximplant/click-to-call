@@ -7,7 +7,7 @@ teleport(to=".call")
 </template>
 
 <script lang="ts">
-  import { Select } from '@voximplant/spaceui';
+  import { DropdownOptionProps, Select } from '@voximplant/spaceui';
   import { defineComponent, onMounted, reactive, ref, toRef } from 'vue';
   import * as VoxImplant from 'voximplant-websdk';
   import { AudioParams } from 'voximplant-websdk/Hardware/src';
@@ -18,18 +18,22 @@ teleport(to=".call")
     emit: ['update:closeSettings'],
     setup(props, { emit }) {
       const call = toRef(props, 'call');
+      const item: DropdownOptionProps = { label: '', value: '' };
       const mics = reactive({
-        list: [{ label: '', value: '' }],
+        list: [item],
       });
-      const active = ref({ label: '', value: '' });
+      const active = ref<DropdownOptionProps>({ label: '', value: '' });
       onMounted(async () => {
         const devices: AudioSourceInfo[] =
           await VoxImplant.Hardware.AudioDeviceManager.get().getInputDevices();
-        const selectMics = devices.map((mic: any) => ({ label: mic.name, value: mic.id }));
+        const selectMics = devices.map((mic: AudioSourceInfo) => ({
+          label: mic.name,
+          value: mic.id,
+        }));
         mics.list = selectMics;
         active.value = mics.list[0];
       });
-      const changeMicrophone = (inputId: any) => {
+      const changeMicrophone = (inputId: HTMLInputElement) => {
         const audioParams: AudioParams = { inputId: inputId.value };
         if (call.value) {
           VoxImplant.Hardware.AudioDeviceManager.get().setCallAudioSettings(

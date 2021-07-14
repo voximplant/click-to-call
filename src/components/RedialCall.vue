@@ -35,12 +35,10 @@
     height: 22px;
     margin-bottom: 24px;
   }
-  .call {
-    & .sui-button {
-      & .only-icon {
-        --sui-icon-color: white;
-        margin-right: 4px;
-      }
+  .redial-call {
+    & >>> .sui-icon {
+      --sui-icon-color: #ffffff !important;
+      margin-right: 4px;
     }
   }
 </style>

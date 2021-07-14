@@ -2,23 +2,19 @@
 .dtmf-keyboard
   .digits
     .digit(v-for="n of [1,2,3,4,5,6,7,8,9, '*', 0, '#']" @click="emitDigit" tabindex=0) {{n}}
-  .hangup(@click="hangup")
 </template>
 
 <script lang="ts">
   import { defineComponent } from 'vue';
   export default defineComponent({
-    emit: ['update:digit', 'update:hangup'],
+    emit: ['update:digit'],
     setup(props, { emit }) {
-      const emitDigit = (e: any) => {
-        emit('update:digit', e.target.innerText);
-      };
-      const hangup = () => {
-        emit('update:hangup');
+      const emitDigit = (e: Event) => {
+        const input = e.target as HTMLElement;
+        emit('update:digit', input.innerText);
       };
       return {
         emitDigit,
-        hangup,
       };
     },
   });
@@ -48,12 +44,5 @@
   .digit:focus {
     outline: none;
     box-shadow: 0 0 0 2px var(--sui-blue-500);
-  }
-  .hangup {
-    position: relative;
-    width: 40px;
-    height: 40px;
-    margin: 6px auto;
-    background-image: url('../assets/decline.png');
   }
 </style>
