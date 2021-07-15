@@ -3,7 +3,7 @@ MicPermission(v-if="!isMicAccessGranted" :accessDenied="accessDenied")
 .call(v-else="isMicAccessGranted")
   .settings-panel
     Button(size="s" mode="secondary" icon="ic20-settings" @click="showSettings=true") Settings
-    Button(size="s" mode="secondary" icon="ic20-mic" @click="checkingOpened=true") Checking
+    Button(size="s" mode="secondary" icon="ic20-mic" @click="startTestMic") Checking
   .call-state
     Timer(:callState="callState")
     Settings(v-if="showSettings" @update:closeSettings="showSettings=false" :call="call")
@@ -131,6 +131,10 @@ MicPermission(v-if="!isMicAccessGranted" :accessDenied="accessDenied")
           call.value?.muteMicrophone();
         }
       };
+      const startTestMic = () => {
+        checkingOpened.value = true;
+        call.value?.hangup();
+      };
       return {
         muted,
         toggleMic,
@@ -146,6 +150,7 @@ MicPermission(v-if="!isMicAccessGranted" :accessDenied="accessDenied")
         sdk,
         call,
         connectionRate,
+        startTestMic,
       };
     },
   });

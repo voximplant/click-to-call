@@ -1,8 +1,7 @@
 <template lang="pug">
 .checking-mic
-  Timer(:callState="callState" v-if="callState !== CallState.DISCONNECTED")
+  Timer(:callState="timerState" v-if="callState !== CallState.DISCONNECTED")
   .text {{ message }}
-    a(:href="record" target="_blank" v-if="record") {{ record }}
   Button.close(mode="flat" @click="stopChecking") {{ btnName }}
 </template>
 
@@ -21,7 +20,7 @@
     props: ['sdk'],
     setup(props, { emit }) {
       const message = ref<string>('Connection with service...');
-      const callState = ref<string>('');
+      const timerState = ref<string>('');
       const btnName = ref<string>('Cancel');
       const record = ref<string>('');
       let totalPacketLost: number | undefined = 0;
@@ -30,16 +29,20 @@
         const sdk = props.sdk;
         call = sdk?.call({ number: 'testmic' });
         call?.on(VoxImplant.CallEvents.Connected, () => {
-          callState.value = CallState.CONNECTED;
           message.value = 'Say something to test your mic';
         });
         call?.on(VoxImplant.CallEvents.Disconnected, () => {
-          callState.value = CallState.DISCONNECTED;
+          message.value = `All works! Total packet lost is ${totalPacketLost}%.`;
           btnName.value = 'Close';
         });
         call?.on(VoxImplant.CallEvents.MessageReceived, (e: EventHandlers.MessageReceived) => {
-          message.value = `All works! Total packet lost is ${totalPacketLost}%. Here is the record: `;
-          record.value = e.text;
+          if (e.text === 'record') {
+            timerState.value = CallState.CONNECTED;
+          } else {
+            message.value = 'Listen the record';
+            timerState.value = CallState.DISCONNECTED;
+            record.value = e.text;
+          }
         });
         call?.on(VoxImplant.CallEvents.CallStatsReceived, (e: EventHandlers.CallStatsReceived) => {
           totalPacketLost = e.stats.totalPacketsLost;
@@ -55,7 +58,7 @@
         createTestCall,
         stopChecking,
         btnName,
-        callState,
+        timerState,
         CallState,
         record,
       };
