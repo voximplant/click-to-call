@@ -51,7 +51,7 @@
     width: 300px;
     height: 40px;
     border-radius: 4px;
-    z-index: -1;
+    overflow: hidden;
   }
   .level {
     position: relative;

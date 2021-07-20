@@ -77,10 +77,10 @@ teleport(to=".call")
     width: 280px;
     height: 40px;
     border-radius: 4px;
-    overflow: hidden;
     & .sui-select {
       position: absolute;
       display: block;
+      z-index: 1;
     }
     & >>> .sui-select-input {
       background-color: transparent;
@@ -98,7 +98,6 @@ teleport(to=".call")
     box-shadow: 0 2px 8px rgba(40, 41, 61, 0.04), 0 16px 24px rgba(96, 97, 112, 0.16);
     border-radius: 8px;
     box-sizing: border-box;
-    z-index: 2;
   }
   .close {
     position: absolute;
