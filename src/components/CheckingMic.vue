@@ -29,7 +29,7 @@
         const sdk = props.sdk;
         call = sdk?.call({ number: 'testmic' });
         call?.on(VoxImplant.CallEvents.Connected, () => {
-          message.value = 'Say something to test your mic';
+          message.value = 'Hello, welcome to VoxImplant testing service.';
         });
         call?.on(VoxImplant.CallEvents.Disconnected, () => {
           message.value = `All works! Total packet lost is ${totalPacketLost}%.`;
@@ -38,8 +38,11 @@
         call?.on(VoxImplant.CallEvents.MessageReceived, (e: EventHandlers.MessageReceived) => {
           if (e.text === 'record') {
             timerState.value = CallState.CONNECTED;
+            message.value =
+              'Please record your message, afterwards your message will be played back to you.';
           } else {
-            message.value = 'Listen the record';
+            message.value =
+              'If you are able to hear your own voice, then you have configured your audio recording device correctly. If you hear this message but not your own voice then you need to configure your audio recording device. Goodbye.';
             timerState.value = CallState.DISCONNECTED;
             record.value = e.text;
           }

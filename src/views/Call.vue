@@ -12,23 +12,18 @@ MicPermission(v-if="!isMicAccessGranted" :accessDenied="accessDenied")
     RedialCall(v-if="callState===CallState.DISCONNECTED" @update:callBtn="createCall")
     DtmfKeyboard(v-if="callState===CallState.CONNECTED" @update:digit="sendDigit")
   .controls(v-if="callState===CallState.CONNECTED")
-    .microphone(@click="toggleMic")
-      .muted(v-if="muted")
-      .unmuted(v-else="!muted")
+    Microphone(:call="call")
     .hangup(@click="disconnect")
-    .connection-rate
-      .stripe-high(:class="connectionRate")
-      .stripe-medium(:class="connectionRate")
-      .stripe-low(:class="connectionRate")
+    ConnectionRate(:call="call")
   .footer
     .help
-      a(href="https://voximplant.com" id="help") Help
+      a(href="https://voximplant.com" target="_blank" id="help") Help
     .voxlink
-      a(href="https://voximplant.com") voximplant.com
+      a(href="https://voximplant.com" target="_blank") voximplant.com
 </template>
 
 <script lang="ts">
-  import { defineComponent, onMounted, ref } from 'vue';
+  import { defineComponent, ref } from 'vue';
   import Connection from '@/components/Connection.vue';
   import { Button } from '@voximplant/spaceui';
   import * as VoxImplant from 'voximplant-websdk';
@@ -40,9 +35,13 @@ MicPermission(v-if="!isMicAccessGranted" :accessDenied="accessDenied")
   import DtmfKeyboard from '@/components/DtmfKeyboard.vue';
   import CheckingMic from '@/components/CheckingMic.vue';
   import Timer from '@/components/Timer.vue';
+  import ConnectionRate from '@/components/ConnectionRate.vue';
+  import Microphone from '@/components/Microphone.vue';
 
   export default defineComponent({
     components: {
+      Microphone,
+      ConnectionRate,
       Timer,
       CheckingMic,
       DtmfKeyboard,
@@ -54,16 +53,8 @@ MicPermission(v-if="!isMicAccessGranted" :accessDenied="accessDenied")
     },
     setup() {
       const callState = ref<string>('');
-      const muted = ref<boolean>(false);
-      const connectionRate = ref<string>('high');
       const accessDenied = ref<boolean>(false);
       const isMicAccessGranted = ref<boolean>(false);
-      onMounted(async () => {
-        const audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        if (audioStream) {
-          isMicAccessGranted.value = true;
-        }
-      });
       const sdk = VoxImplant.getInstance();
       sdk.on(VoxImplant.Events.MicAccessResult, (e) => {
         if (e.result === true) {
@@ -88,10 +79,9 @@ MicPermission(v-if="!isMicAccessGranted" :accessDenied="accessDenied")
       const disconnect = () => {
         call.value?.hangup();
       };
-
       const createCall = () => {
         call.value = sdk.call({
-          number: 'olya',
+          number: process.env.VUE_APP_NUMBER,
           video: { sendVideo: false, receiveVideo: false },
         });
         callState.value = CallState.CONNECTING;
@@ -104,40 +94,17 @@ MicPermission(v-if="!isMicAccessGranted" :accessDenied="accessDenied")
         call.value.on(VoxImplant.CallEvents.Failed, () => {
           callState.value = CallState.DISCONNECTED;
         });
-        call.value.on(VoxImplant.CallEvents.CallStatsReceived, (e) => {
-          if (e.stats.totalLoss <= 0.01) {
-            connectionRate.value = 'high';
-          } else if (e.stats.totalLoss <= 0.02) {
-            connectionRate.value = 'medium';
-          } else {
-            connectionRate.value = 'low';
-          }
-        });
-        call.value.on(VoxImplant.CallEvents.QualityIssueHighMediaLatency, (e: any) => {
-          console.warn('QualityIssueHighMediaLatency', e);
-        });
       };
       const showSettings = ref<boolean>(false);
       const checkingOpened = ref<boolean>(false);
       const sendDigit = (digit: string) => {
         call.value?.sendTone(digit);
       };
-      const toggleMic = () => {
-        if (muted.value) {
-          muted.value = false;
-          call.value?.unmuteMicrophone();
-        } else {
-          muted.value = true;
-          call.value?.muteMicrophone();
-        }
-      };
       const startTestMic = () => {
         checkingOpened.value = true;
         call.value?.hangup();
       };
       return {
-        muted,
-        toggleMic,
         callState,
         CallState,
         createCall,
@@ -149,7 +116,6 @@ MicPermission(v-if="!isMicAccessGranted" :accessDenied="accessDenied")
         sendDigit,
         sdk,
         call,
-        connectionRate,
         startTestMic,
       };
     },
@@ -197,80 +163,12 @@ MicPermission(v-if="!isMicAccessGranted" :accessDenied="accessDenied")
     display: flex;
     justify-content: flex-start;
   }
-  .microphone {
-    margin: 6px 8px;
-    width: 40px;
-  }
-  .muted {
-    width: 40px;
-    height: 40px;
-    background-image: url('../assets/muted.svg');
-  }
-  .unmuted {
-    width: 40px;
-    height: 40px;
-    background-image: url('../assets/unmuted.svg');
-  }
   .hangup {
     position: relative;
     width: 40px;
     height: 40px;
     margin: 6px auto;
     background-image: url('../assets/decline.png');
-  }
-  .connection-rate {
-    position: relative;
-    overflow: hidden;
-    width: 40px;
-    height: 40px;
-    margin: 6px 8px;
-    box-sizing: border-box;
-    transform: rotate(45deg);
-    top: -10px;
-  }
-  .stripe-high {
-    width: 80px;
-    height: 80px;
-    border: solid white 6px;
-    border-radius: 50%;
-    position: absolute;
-    box-sizing: border-box;
-  }
-  .stripe-high.medium,
-  .stripe-high.low {
-    background-color: grey;
-  }
-  .stripe-medium {
-    width: 56px;
-    height: 56px;
-    border: solid white 6px;
-    border-radius: 50%;
-    position: absolute;
-    top: 12px;
-    left: 12px;
-    box-sizing: border-box;
-  }
-  .stripe-medium.low {
-    background-color: grey;
-  }
-  .stripe-low {
-    width: 32px;
-    height: 32px;
-    border: solid white 6px;
-    border-radius: 50%;
-    position: absolute;
-    top: 24px;
-    left: 24px;
-    box-sizing: border-box;
-  }
-  .high {
-    background-color: #2fbc4f;
-  }
-  .medium {
-    background-color: #fadb14;
-  }
-  .low {
-    background-color: #f5222d;
   }
   .footer {
     position: absolute;
