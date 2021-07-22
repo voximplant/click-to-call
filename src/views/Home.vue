@@ -1,14 +1,15 @@
 <template lang="pug">
 .home
-  StartCallBtn
 </template>
 
 <script lang="ts">
   import { defineComponent } from 'vue';
-  import StartCallBtn from '@/components/StartCallBtn.vue';
+  import { callButton } from '../../static/button';
   export default defineComponent({
-    components: {
-      StartCallBtn,
+    setup() {
+      return {
+        callButton,
+      };
     },
   });
 </script>
