@@ -1,8 +1,10 @@
 <template lang="pug">
 .checking-mic
+  teleport(to=".call")
+    .background
   Timer(:callState="timerState" v-if="callState !== CallState.DISCONNECTED")
   .text {{ message }}
-  Button.close(mode="flat" @click="stopChecking") {{ btnName }}
+  Button.close(mode="secondary" @click="stopChecking") {{ btnName }}
 </template>
 
 <script lang="ts">
@@ -31,18 +33,14 @@
         call?.on(VoxImplant.CallEvents.Connected, () => {
           message.value = 'Hello, welcome to VoxImplant testing service.';
         });
-        call?.on(VoxImplant.CallEvents.Disconnected, () => {
-          message.value = `All works! Total packet lost is ${totalPacketLost}%.`;
-          btnName.value = 'Close';
-        });
         call?.on(VoxImplant.CallEvents.MessageReceived, (e: EventHandlers.MessageReceived) => {
           if (e.text === 'record') {
             timerState.value = CallState.CONNECTED;
             message.value =
               'Please record your message, afterwards your message will be played back to you.';
           } else {
-            message.value =
-              'If you are able to hear your own voice, then you have configured your audio recording device correctly. If you hear this message but not your own voice then you need to configure your audio recording device. Goodbye.';
+            message.value = `All works! Total packet lost is ${totalPacketLost}%.`;
+            btnName.value = 'Close';
             timerState.value = CallState.DISCONNECTED;
             record.value = e.text;
           }
@@ -73,32 +71,39 @@
   .checking-mic {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     align-items: center;
-    margin: 12px auto;
     position: absolute;
+    padding: 24px;
     z-index: 1;
-    min-width: 200px;
-    max-width: 300px;
-    min-height: 100px;
+    width: 286px;
+    height: 192px;
     overflow-wrap: anywhere;
     background-color: #ffffff;
-    border-radius: 5%;
-    padding: 12px 16px;
-    font-family: Roboto, sans-serif;
+    border-radius: 10px;
+    box-sizing: border-box;
     box-shadow: 0 2px 8px rgba(40, 41, 61, 0.04), 0 16px 24px rgba(96, 97, 112, 0.16);
+    & .sui-button {
+      padding: 6px 12px;
+    }
   }
-  .checking-mic:after {
-    content: '';
-    position: absolute;
-    bottom: 100%;
-    left: 70%;
-    border-width: 10px;
-    border-style: solid;
-    border-color: transparent transparent #ffffff transparent;
+  .text {
+    width: 100%;
+    font-family: Roboto, sans-serif;
+    font-size: 16px;
+    line-height: 20px;
+    text-align: center;
+    margin: 16px;
   }
   .close {
-    position: relative;
-    top: 10px;
+    position: absolute;
+    top: 136px;
+  }
+  .background {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background-color: black;
+    opacity: 0.2;
+    border-radius: 12px;
   }
 </style>

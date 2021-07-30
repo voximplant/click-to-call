@@ -11,9 +11,7 @@
     setup(props) {
       const connection = toRef(props, 'callState');
       watch(connection, (state: string) => {
-        if (state === CallState.CONNECTED) {
-          startTimer();
-        } else if (state === CallState.DISCONNECTED) {
+        if (state === CallState.DISCONNECTED) {
           stopTimer();
         }
       });
@@ -22,18 +20,17 @@
       const startTimer = () => {
         let time = 0;
         const second = 1;
-        currentTime.value = '00:00:00';
+        currentTime.value = '00:00';
         interval = setInterval(() => {
           time = time + second;
-          const hours = Math.floor(time / 3600);
           const minutes = Math.floor((time % 3600) / 60);
           const seconds = time % 60;
-          currentTime.value = `${hours < 10 ? `0${hours}` : hours}:${
-            minutes < 10 ? `0${minutes}` : minutes
-          }:${seconds < 10 ? `0${seconds}` : seconds}`;
+          currentTime.value = `${minutes < 10 ? `0${minutes}` : minutes}:${
+            seconds < 10 ? `0${seconds}` : seconds
+          }`;
         }, 1000);
       };
-
+      startTimer();
       const stopTimer = () => {
         clearInterval(interval);
         currentTime.value = '';
@@ -47,8 +44,11 @@
 
 <style scoped>
   .timer {
-    width: 70px;
+    width: 40px;
     height: 20px;
-    margin: 12px auto;
+    font-family: Roboto, sans-serif;
+    font-size: 16px;
+    line-height: 20px;
+    color: #662eff;
   }
 </style>

@@ -1,18 +1,22 @@
 <template lang="pug">
 .connection-rate
-  .stripe-high(:class="connectionRate")
-  .stripe-medium(:class="connectionRate")
-  .stripe-low(:class="connectionRate")
+  svg.indicator(:style="levelStyle")
+    use(:href="'/icons.svg#indicator'")
 </template>
 
 <script lang="ts">
-  import { defineComponent, ref, toRef } from 'vue';
+  import { defineComponent, reactive, ref, toRef, watch } from 'vue';
   import * as VoxImplant from 'voximplant-websdk';
   import { EventHandlers } from 'voximplant-websdk/EventHandlers';
   export default defineComponent({
     props: ['call'],
     setup(props) {
       const connectionRate = ref<string>('high');
+      const levelStyle = reactive({
+        '--high-level-color': '#5ad677',
+        '--medium-level-color': '#5ad677',
+        '--low-level-color': '#5ad677',
+      });
       const call = toRef(props, 'call');
       call.value.on(
         VoxImplant.CallEvents.CallStatsReceived,
@@ -26,8 +30,25 @@
           }
         }
       );
+      watch(connectionRate, (state) => {
+        console.warn('CONNECTON RATE CHANGET TO: ', state);
+        if (state === 'high') {
+          levelStyle['--high-level-color'] = '#5ad677';
+          levelStyle['--medium-level-color'] = '#5ad677';
+          levelStyle['--low-level-color'] = '#5ad677';
+        } else if (state === 'medium') {
+          levelStyle['--high-level-color'] = '#ebedf2';
+          levelStyle['--medium-level-color'] = '#ff991f';
+          levelStyle['--low-level-color'] = '#ff991f';
+        } else {
+          levelStyle['--high-level-color'] = '#ebedf2';
+          levelStyle['--medium-level-color'] = '#ebedf2';
+          levelStyle['--low-level-color'] = '#ff4d4f';
+        }
+      });
       return {
         connectionRate,
+        levelStyle,
       };
     },
   });
@@ -36,56 +57,8 @@
 <style scoped>
   .connection-rate {
     position: relative;
-    overflow: hidden;
-    width: 40px;
-    height: 40px;
-    margin: 6px 8px;
+    width: 44px;
+    height: 44px;
     box-sizing: border-box;
-    transform: rotate(45deg);
-    top: -10px;
-  }
-  .stripe-high {
-    width: 80px;
-    height: 80px;
-    border: solid white 6px;
-    border-radius: 50%;
-    position: absolute;
-    box-sizing: border-box;
-  }
-  .stripe-high.medium,
-  .stripe-high.low {
-    background-color: grey;
-  }
-  .stripe-medium {
-    width: 56px;
-    height: 56px;
-    border: solid white 6px;
-    border-radius: 50%;
-    position: absolute;
-    top: 12px;
-    left: 12px;
-    box-sizing: border-box;
-  }
-  .stripe-medium.low {
-    background-color: grey;
-  }
-  .stripe-low {
-    width: 32px;
-    height: 32px;
-    border: solid white 6px;
-    border-radius: 50%;
-    position: absolute;
-    top: 24px;
-    left: 24px;
-    box-sizing: border-box;
-  }
-  .high {
-    background-color: #2fbc4f;
-  }
-  .medium {
-    background-color: #fadb14;
-  }
-  .low {
-    background-color: #f5222d;
   }
 </style>

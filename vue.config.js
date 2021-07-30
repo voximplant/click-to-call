@@ -6,6 +6,9 @@ const PostcssCustomMedia = require('postcss-custom-media');
 const path = require('path');
 
 module.exports = {
+  devServer: {
+    host: 'localhost',
+  },
   css: {
     loaderOptions: {
       postcss: {

@@ -1,15 +1,15 @@
 <template lang="pug">
 .redial-call
   .text Press the button to call
-  Button.call(icon="ic20-phone" @click="redial") Call
+  .call-button(@click="redial" tabindex=0)
+    svg.call-key
+      use(:href="'/icons.svg#call-button'")
 </template>
 
 <script lang="ts">
-  import { Button } from '@voximplant/spaceui';
   import { defineComponent } from 'vue';
 
   export default defineComponent({
-    components: { Button },
     emit: ['update:callBtn'],
     setup(props, { emit }) {
       const redial = () => {
@@ -25,20 +25,31 @@
 <style scoped>
   .redial-call {
     position: relative;
-    margin: 32px auto;
     display: flex;
     flex-direction: column;
     align-items: center;
   }
   .text {
     font-family: Roboto, sans-serif;
-    height: 22px;
-    margin-bottom: 24px;
+    font-size: 16px;
+    line-height: 20px;
+    color: #555770;
   }
-  .redial-call {
-    & >>> .sui-icon {
-      --sui-icon-color: #ffffff !important;
-      margin-right: 4px;
-    }
+  .call-button {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    margin: 24px;
+    cursor: pointer;
+  }
+  .call-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--sui-blue-500);
+  }
+  .call-key {
+    --call-color: #5ad677;
+  }
+  .call-key:hover {
+    --call-color: #2fbc4f;
   }
 </style>

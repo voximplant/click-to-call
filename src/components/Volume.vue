@@ -1,10 +1,11 @@
 <template lang="pug">
 .volume
-  .level(:style="{width:level}")
+    svg(:style="volumeLevelColor")
+      use(:href="'/icons.svg#volume-indicator'")
 </template>
 
 <script lang="ts">
-  import { defineComponent, onMounted, ref, toRef, watch } from 'vue';
+  import { defineComponent, onMounted, reactive, ref, toRef, watch } from 'vue';
   export default defineComponent({
     props: ['inputId'],
     setup(props) {
@@ -23,6 +24,14 @@
         );
         mediaStreamSource.connect(audioLevelNode);
       });
+      const volumeLevelColor = reactive({
+        '--volume-level-1': '#EBEDF2',
+        '--volume-level-2': '#EBEDF2',
+        '--volume-level-3': '#EBEDF2',
+        '--volume-level-4': '#EBEDF2',
+        '--volume-level-5': '#EBEDF2',
+        '--volume-level-6': '#EBEDF2',
+      });
       onMounted(async () => {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
         await audioContext.audioWorklet.addModule('processor.js');
@@ -37,9 +46,54 @@
         mediaStreamSource?.connect(audioLevelNode);
         audioLevelNode.connect(audioContext.destination);
         mediaStreamSource?.connect(audioContext.destination);
+        watch(level, (state) => {
+          if (state === '1%') {
+            volumeLevelColor['--volume-level-1'] = '#2FBC4F';
+            volumeLevelColor['--volume-level-2'] = '#EBEDF2';
+            volumeLevelColor['--volume-level-3'] = '#EBEDF2';
+            volumeLevelColor['--volume-level-4'] = '#EBEDF2';
+            volumeLevelColor['--volume-level-5'] = '#EBEDF2';
+            volumeLevelColor['--volume-level-6'] = '#EBEDF2';
+          } else if (state > '1%' && state <= '20%') {
+            volumeLevelColor['--volume-level-1'] = '#2FBC4F';
+            volumeLevelColor['--volume-level-2'] = '#2FBC4F';
+            volumeLevelColor['--volume-level-3'] = '#EBEDF2';
+            volumeLevelColor['--volume-level-4'] = '#EBEDF2';
+            volumeLevelColor['--volume-level-5'] = '#EBEDF2';
+            volumeLevelColor['--volume-level-6'] = '#EBEDF2';
+          } else if (state > '20%' && state <= '40%') {
+            volumeLevelColor['--volume-level-1'] = '#2FBC4F';
+            volumeLevelColor['--volume-level-2'] = '#2FBC4F';
+            volumeLevelColor['--volume-level-3'] = '#2FBC4F';
+            volumeLevelColor['--volume-level-4'] = '#EBEDF2';
+            volumeLevelColor['--volume-level-5'] = '#EBEDF2';
+            volumeLevelColor['--volume-level-6'] = '#EBEDF2';
+          } else if (state > '40%' && state <= '60%') {
+            volumeLevelColor['--volume-level-1'] = '#2FBC4F';
+            volumeLevelColor['--volume-level-2'] = '#2FBC4F';
+            volumeLevelColor['--volume-level-3'] = '#2FBC4F';
+            volumeLevelColor['--volume-level-4'] = '#2FBC4F';
+            volumeLevelColor['--volume-level-5'] = '#EBEDF2';
+            volumeLevelColor['--volume-level-6'] = '#EBEDF2';
+          } else if (state > '60%' && state <= '80%') {
+            volumeLevelColor['--volume-level-1'] = '#2FBC4F';
+            volumeLevelColor['--volume-level-2'] = '#2FBC4F';
+            volumeLevelColor['--volume-level-3'] = '#2FBC4F';
+            volumeLevelColor['--volume-level-4'] = '#2FBC4F';
+            volumeLevelColor['--volume-level-5'] = '#2FBC4F';
+            volumeLevelColor['--volume-level-6'] = '#EBEDF2';
+          } else if (state > '80%') {
+            volumeLevelColor['--volume-level-1'] = '#2FBC4F';
+            volumeLevelColor['--volume-level-2'] = '#2FBC4F';
+            volumeLevelColor['--volume-level-3'] = '#2FBC4F';
+            volumeLevelColor['--volume-level-4'] = '#2FBC4F';
+            volumeLevelColor['--volume-level-5'] = '#2FBC4F';
+            volumeLevelColor['--volume-level-6'] = '#2FBC4F';
+          }
+        });
       });
       return {
-        level,
+        volumeLevelColor,
       };
     },
   });
@@ -48,14 +102,8 @@
 <style scoped>
   .volume {
     position: relative;
-    width: 300px;
-    height: 40px;
+    width: 248px;
+    height: 4px;
     border-radius: 4px;
-    overflow: hidden;
-  }
-  .level {
-    position: relative;
-    height: 100%;
-    background-color: #2fbc4f;
   }
 </style>

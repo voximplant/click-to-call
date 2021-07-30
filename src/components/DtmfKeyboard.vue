@@ -1,7 +1,9 @@
 <template lang="pug">
-.dtmf-keyboard
-  .digits
-    .digit(v-for="n of [1,2,3,4,5,6,7,8,9, '*', 0, '#']" @click="emitDigit" tabindex=0) {{n}}
+.digits-wrapper
+  .dtmf-keyboard
+    .digit(v-for="n of buttons" @click="emitDigit" tabindex=0)
+      svg.key-btn(:width="'44'" :height="'44'")
+        use(:href="n" )
 </template>
 
 <script lang="ts">
@@ -9,12 +11,29 @@
   export default defineComponent({
     emit: ['update:digit'],
     setup(props, { emit }) {
+      const buttons = [
+        '/icons.svg#button-1',
+        '/icons.svg#button-2',
+        '/icons.svg#button-3',
+        '/icons.svg#button-4',
+        '/icons.svg#button-5',
+        '/icons.svg#button-6',
+        '/icons.svg#button-7',
+        '/icons.svg#button-8',
+        '/icons.svg#button-9',
+        '/icons.svg#button-z',
+        '/icons.svg#button-0',
+        '/icons.svg#button-r',
+      ];
+      const keyStyle = { '--key-color': '#f2f2f5' };
       const emitDigit = (e: Event) => {
         const input = e.target as HTMLElement;
         emit('update:digit', input.innerText);
       };
       return {
         emitDigit,
+        buttons,
+        keyStyle,
       };
     },
   });
@@ -22,23 +41,30 @@
 
 <style scoped>
   .dtmf-keyboard {
-    width: 168px;
-    height: 208px;
-  }
-  .digits {
+    width: 216px;
+    height: 228px;
     position: relative;
     display: flex;
     flex-wrap: wrap;
-    width: 168px;
-    height: 208px;
+    top: -4px;
+    left: -12px;
+  }
+  .digits-wrapper {
+    margin-top: 24px;
+    width: 192px;
+    height: 218px;
+  }
+  .key-btn {
+    --key-color: #f2f2f5;
+  }
+  .key-btn:hover {
+    --key-color: #ebedf2;
   }
   .digit {
-    width: 40px;
-    height: 40px;
-    margin: 6px 8px;
-    background-color: #f2f2f5;
+    width: 44px;
+    height: 44px;
+    margin: 6px 14px;
     border-radius: 50%;
-    line-height: 40px;
     cursor: pointer;
   }
   .digit:focus {

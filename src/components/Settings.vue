@@ -1,12 +1,13 @@
 <template lang="pug">
-teleport(to=".call")
-  .settings
-    .close(@click="closeSettings")
-    .text Select microphone
-    .select-with-volume
-      Select(v-model:active="active" @update:active="changeMicrophone" :options="mics.list")
-      Volume(:inputId="active")
-    Button(size="s" mode="flat" @click="setNewMicrophone") OK
+.settings
+  teleport(to=".call")
+    .background
+  .text Select Microphone
+  Select(v-model:active="active" size='s' @update:active="changeMicrophone" :options="mics.list")
+  Volume(:inputId="active")
+  .button-group
+    Button(mode="primary" size="s" width="fill-container" @click="setNewMicrophone") Ok
+    Button(mode="secondary" size="s" width="fill-container" @click="closeSettings") Cancel
 </template>
 
 <script lang="ts">
@@ -72,43 +73,54 @@ teleport(to=".call")
 </script>
 
 <style scoped>
-  .select-with-volume {
-    position: relative;
-    width: 280px;
-    height: 40px;
-    border-radius: 4px;
-    & .sui-select {
-      position: absolute;
-      display: block;
-      z-index: 1;
-    }
-    & >>> .sui-select-input {
-      background-color: transparent;
-    }
-  }
   .settings {
-    background-color: #ffffff;
-    position: absolute;
-    width: 300px;
-    margin-top: 60px;
-    padding: 16px 16px;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    box-shadow: 0 2px 8px rgba(40, 41, 61, 0.04), 0 16px 24px rgba(96, 97, 112, 0.16);
-    border-radius: 8px;
-    box-sizing: border-box;
-  }
-  .close {
+    background-color: #ffffff;
     position: absolute;
-    right: 5px;
-    top: 5px;
-    width: 20px;
-    height: 20px;
-    background-image: url('../assets/ic20-close.svg');
+    width: 296px;
+    height: 196px;
+    padding: 28px 24px 32px 24px;
+    box-shadow: 0 2px 8px rgba(40, 41, 61, 0.04), 0 16px 24px rgba(96, 97, 112, 0.16);
+    border-radius: 10px;
+    box-sizing: border-box;
+    z-index: 1;
+    & >>> .sui-select-input {
+      font-family: Roboto, sans-serif;
+      font-size: 14px;
+      line-height: 20px;
+      color: #1f1c28;
+    }
+    & .sui-opened {
+      & >>> .sui-arrow-icon {
+        --sui-icon-color: #662eff !important;
+      }
+    }
   }
   .text {
     font-family: Roboto, sans-serif;
-    margin: 12px 0;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 16px;
+    color: #2e283d;
+    text-align: left;
+    margin-bottom: 20px;
+  }
+  .background {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background-color: black;
+    opacity: 0.2;
+    border-radius: 12px;
+  }
+  .button-group {
+    position: relative;
+    margin-top: 24px;
+    display: flex;
+    width: 150px;
+    & .sui-button {
+      margin-right: 8px;
+    }
   }
 </style>

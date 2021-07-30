@@ -1,17 +1,21 @@
 <template lang="pug">
 .connection
   .state
-    Spinner(size="l")
+    .wrapper-process
+      .show-process
+        .processing
     .text Connection...
-  Button(icon="ic20-close" @click="hangup") Cancel
+  .decline(@click="hangup" tabindex=0)
+    svg.decline-key
+      use(:href="'/icons.svg#decline'")
 </template>
 
 <script lang="ts">
   import { defineComponent } from 'vue';
-  import { Button, Spinner } from '@voximplant/spaceui';
+  import { Button } from '@voximplant/spaceui';
 
   export default defineComponent({
-    components: { Button, Spinner },
+    components: { Button },
     emit: ['update:cancelBtn'],
     setup(props, { emit }) {
       const hangup = () => {
@@ -27,8 +31,6 @@
 <style scoped>
   .connection {
     position: relative;
-    height: 300px;
-    margin: 32px auto;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -37,13 +39,61 @@
       margin-right: 4px;
     }
   }
+  .wrapper-process {
+    position: relative;
+    width: 24px;
+    height: 4px;
+    margin: 8px 0 16px 0;
+  }
+  .processing {
+    width: 24px;
+    height: 4px;
+    background-image: url('../assets/processing.svg');
+  }
+  .show-process {
+    position: absolute;
+    height: 100%;
+    width: 0;
+    left: 0;
+    overflow: hidden;
+    animation: show 1s infinite;
+  }
+  @keyframes show {
+    0% {
+      width: 0;
+    }
+    25% {
+      width: 8px;
+    }
+    50% {
+      width: 16px;
+    }
+    100% {
+      width: 24px;
+    }
+  }
   .state {
     display: flex;
-    flex-direction: row;
-    height: 22px;
-    margin-bottom: 24px;
+    flex-direction: column;
+    align-items: center;
   }
   .text {
-    margin-left: 10px;
+    font-family: Roboto, sans-serif;
+    font-size: 16px;
+    line-height: 20px;
+    color: #662eff;
+  }
+  .decline {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    margin: 24px;
+    cursor: pointer;
+  }
+  .decline-key {
+    --decline-color: #ff7875;
+  }
+  .decline-key:hover {
+    --decline-color: #ff4d4f;
   }
 </style>

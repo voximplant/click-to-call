@@ -2,30 +2,33 @@
 MicPermission(v-if="!isMicAccessGranted" :accessDenied="accessDenied")
 .call(v-else="isMicAccessGranted")
   .settings-panel
-    Button(size="s" mode="secondary" icon="ic20-settings" @click="showSettings=true") Settings
-    Button(size="s" mode="secondary" icon="ic20-mic" @click="startTestMic") Checking
+    .vector
+    Button(size="s" mode="primary" width="fill-container" icon="ic20-settings" @click="showSettings=true") Settings
+    Button(size="s" mode="primary" width="fill-container" icon="ic20-mic" @click="startTestMic") Checking
   .call-state
-    Timer(:callState="callState")
+    Timer(:callState="callState" v-if="callState===CallState.CONNECTED")
     Settings(v-if="showSettings" @update:closeSettings="showSettings=false" :call="call")
     CheckingMic(v-if="checkingOpened" @update:checking="checkingOpened=false" :sdk="sdk")
     Connection(v-if="callState===CallState.CONNECTING" @update:cancelBtn="disconnect")
     RedialCall(v-if="callState===CallState.DISCONNECTED" @update:callBtn="createCall")
     DtmfKeyboard(v-if="callState===CallState.CONNECTED" @update:digit="sendDigit")
-  .controls(v-if="callState===CallState.CONNECTED")
-    Microphone(:call="call")
-    .hangup(@click="disconnect")
-    ConnectionRate(:call="call")
+    .controls(v-if="callState===CallState.CONNECTED")
+      Hint(:text="micHint")
+        Microphone(:call="call" @update:isMuted="changeMicHint")
+      Hint(text="End the call")
+        Decline(@click="disconnect")
+      Hint(text="Indicator connection")
+        ConnectionRate(:call="call")
+  .vector-horizontal
   .footer
-    .help
-      a(href="https://voximplant.com" target="_blank" id="help") Help
-    .voxlink
-      a(href="https://voximplant.com" target="_blank") voximplant.com
+    a(href="https://voximplant.com" target="_blank") Help
+    a(href="https://voximplant.com" target="_blank") Voximplant.com
 </template>
 
 <script lang="ts">
   import { defineComponent, ref } from 'vue';
   import Connection from '@/components/Connection.vue';
-  import { Button } from '@voximplant/spaceui';
+  import { Button, Hint } from '@voximplant/spaceui';
   import * as VoxImplant from 'voximplant-websdk';
   import { Call } from 'voximplant-websdk/Call/Call';
   import { CallState } from '@/enums/CallState';
@@ -37,9 +40,11 @@ MicPermission(v-if="!isMicAccessGranted" :accessDenied="accessDenied")
   import Timer from '@/components/Timer.vue';
   import ConnectionRate from '@/components/ConnectionRate.vue';
   import Microphone from '@/components/Microphone.vue';
+  import Decline from '@/components/Decline.vue';
 
   export default defineComponent({
     components: {
+      Decline,
       Microphone,
       ConnectionRate,
       Timer,
@@ -50,6 +55,7 @@ MicPermission(v-if="!isMicAccessGranted" :accessDenied="accessDenied")
       RedialCall,
       Connection,
       Button,
+      Hint,
     },
     setup() {
       const callState = ref<string>('');
@@ -104,6 +110,11 @@ MicPermission(v-if="!isMicAccessGranted" :accessDenied="accessDenied")
         checkingOpened.value = true;
         call.value?.hangup();
       };
+      const micHint = ref<string>('Mute');
+      const changeMicHint = (value: string) => {
+        console.error('MicKint', value);
+        micHint.value = value;
+      };
       return {
         callState,
         CallState,
@@ -117,6 +128,8 @@ MicPermission(v-if="!isMicAccessGranted" :accessDenied="accessDenied")
         sdk,
         call,
         startTestMic,
+        changeMicHint,
+        micHint,
       };
     },
   });
@@ -126,30 +139,43 @@ MicPermission(v-if="!isMicAccessGranted" :accessDenied="accessDenied")
   .call {
     position: relative;
     margin: 0 auto;
-    width: 376px;
-    height: 410px;
+    width: 350px;
+    height: 500px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    background: #ffffff;
+    box-shadow: 0 2px 8px rgba(40, 41, 61, 0.04), 0 16px 24px rgba(96, 97, 112, 0.16);
+    border-radius: 12px;
   }
   .settings-panel {
     display: flex;
     justify-content: space-around;
     position: relative;
-    width: 100%;
-    background-color: #662eff;
-    padding: 12px 16px;
+    width: 350px;
     border-radius: 8px 8px 0 0;
-    box-sizing: border-box;
-
-    & >>> .sui-icon {
-      --sui-icon-color: #555770 !important;
-      margin-right: 2px;
+    overflow-x: hidden;
+    & >>> .sui-button {
+      height: 64px;
+      border-radius: 0;
     }
+    & >>> .sui-icon {
+      --sui-icon-color: #ffffff !important;
+    }
+  }
+  .vector {
+    position: absolute;
+    width: 0;
+    height: 64px;
+    left: 175px;
+    top: 0;
+    border-right: 1px solid #8b55ff;
   }
   .call-state {
     position: relative;
-    height: 252px;
+    box-sizing: border-box;
+    padding: 32px 0;
+    height: 388px;
     width: 100%;
     display: flex;
     align-items: center;
@@ -157,34 +183,38 @@ MicPermission(v-if="!isMicAccessGranted" :accessDenied="accessDenied")
   }
   .controls {
     position: relative;
-    height: 52px;
-    width: 168px;
+    height: 44px;
+    width: 188px;
+    margin-top: 24px;
     box-sizing: border-box;
-    display: flex;
-    justify-content: flex-start;
-  }
-  .hangup {
-    position: relative;
-    width: 40px;
-    height: 40px;
-    margin: 6px auto;
-    background-image: url('../assets/decline.png');
-  }
-  .footer {
-    position: absolute;
-    top: 365px;
     display: flex;
     justify-content: space-between;
-    width: 376px;
-    padding: 12px 16px;
-    border-top: #e3e4eb solid 1px;
-    font-size: 14px;
-    box-sizing: border-box;
+    & .hint-container {
+      width: 44px;
+    }
+    & >>> .sui-tooltip {
+      padding: 2px 6px;
+      width: max-content;
+      min-width: 40px;
+      min-height: 20px;
+    }
   }
-  #help {
-    background-image: url('../assets/question-mark.svg');
-    background-repeat: no-repeat;
-    line-height: 20px;
-    padding-left: 20px;
+  .vector-horizontal {
+    position: relative;
+    width: 318px;
+    height: 0;
+    border-top: 1px solid #ebedf2;
+  }
+  .footer {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    height: 48px;
+    width: 350px;
+    padding: 8px 16px;
+    font-size: 12px;
+    line-height: 16px;
+    color: #662eff;
+    box-sizing: border-box;
   }
 </style>
