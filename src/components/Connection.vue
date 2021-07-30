@@ -1,10 +1,9 @@
 <template lang="pug">
 .connection
-  .state
-    .wrapper-process
-      .show-process
-        .processing
-    .text Connection...
+  .process
+    svg.process-dots(width='24' height='4')
+      use(:href="'/icons.svg#processing'")
+  .text Connection...
   .decline(@click="hangup" tabindex=0)
     svg.decline-key
       use(:href="'/icons.svg#decline'")
@@ -39,49 +38,40 @@
       margin-right: 4px;
     }
   }
-  .wrapper-process {
-    position: relative;
-    width: 24px;
-    height: 4px;
-    margin: 8px 0 16px 0;
+  .process-dots {
+    --process-color-1: #662eff;
+    --process-color-2: #662eff;
+    --process-color-3: #662eff;
+    animation: dots 1s infinite;
   }
-  .processing {
-    width: 24px;
-    height: 4px;
-    background-image: url('../assets/processing.svg');
-  }
-  .show-process {
-    position: absolute;
-    height: 100%;
-    width: 0;
-    left: 0;
-    overflow: hidden;
-    animation: show 1s infinite;
-  }
-  @keyframes show {
+  @keyframes dots {
     0% {
-      width: 0;
+      --process-color-1: #ffffff;
+      --process-color-2: #ffffff;
+      --process-color-3: #ffffff;
     }
     25% {
-      width: 8px;
+      --process-color-1: #662eff;
+      --process-color-2: #ffffff;
+      --process-color-3: #ffffff;
     }
     50% {
-      width: 16px;
+      --process-color-1: #662eff;
+      --process-color-2: #662eff;
+      --process-color-3: #ffffff;
     }
-    100% {
-      width: 24px;
+    75% {
+      --process-color-1: #662eff;
+      --process-color-2: #662eff;
+      --process-color-3: #662eff;
     }
-  }
-  .state {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
   }
   .text {
     font-family: Roboto, sans-serif;
     font-size: 16px;
     line-height: 20px;
     color: #662eff;
+    margin-top: 16px;
   }
   .decline {
     width: 44px;
