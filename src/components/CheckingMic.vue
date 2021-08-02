@@ -2,9 +2,9 @@
 .checking-mic
   teleport(to=".call")
     .background
-  Timer(:callState="timerState" v-if="callState !== CallState.DISCONNECTED")
+  Timer(:callState="timerState" v-if="timerState !== CallState.DISCONNECTED")
   .text {{ message }}
-  Button.close(mode="secondary" @click="stopChecking") {{ btnName }}
+  Button.close(mode="secondary" width="fit-content" @click="stopChecking") {{ btnName }}
 </template>
 
 <script lang="ts">
@@ -31,13 +31,12 @@
         const sdk = props.sdk;
         call = sdk?.call({ number: 'testmic' });
         call?.on(VoxImplant.CallEvents.Connected, () => {
-          message.value = 'Hello, welcome to VoxImplant testing service.';
+          message.value =
+            'Please record your message, afterwards your message will be played back to you.';
         });
         call?.on(VoxImplant.CallEvents.MessageReceived, (e: EventHandlers.MessageReceived) => {
           if (e.text === 'record') {
             timerState.value = CallState.CONNECTED;
-            message.value =
-              'Please record your message, afterwards your message will be played back to you.';
           } else {
             message.value = `All works! Total packet lost is ${totalPacketLost}%.`;
             btnName.value = 'Close';
@@ -84,6 +83,7 @@
     box-shadow: 0 2px 8px rgba(40, 41, 61, 0.04), 0 16px 24px rgba(96, 97, 112, 0.16);
     & .sui-button {
       padding: 6px 12px;
+      max-width: initial;
     }
   }
   .text {

@@ -4,7 +4,7 @@
     .background
   .text Select Microphone
   Select(v-model:active="active" size='s' @update:active="changeMicrophone" :options="mics.list")
-  Volume(:inputId="active")
+  Volume(:inputId="active" v-if="audioWorkletDetected")
   .button-group
     Button(mode="primary" size="s" width="fill-container" @click="setNewMicrophone") Ok
     Button(mode="secondary" size="s" width="fill-container" @click="closeSettings") Cancel
@@ -61,12 +61,23 @@
       const closeSettings = () => {
         emit('update:closeSettings');
       };
+      const detectAudioWorklet = () => {
+        if (window['OfflineAudioContext']) {
+          let context = new window['OfflineAudioContext'](1, 1, 44100);
+          const result =
+            context.audioWorklet && typeof context.audioWorklet.addModule === 'function';
+          return result;
+        }
+        return false;
+      };
+      const audioWorkletDetected = detectAudioWorklet();
       return {
         mics,
         active,
         changeMicrophone,
         setNewMicrophone,
         closeSettings,
+        audioWorkletDetected,
       };
     },
   });

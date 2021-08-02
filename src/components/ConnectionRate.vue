@@ -1,6 +1,6 @@
 <template lang="pug">
 .connection-rate
-  svg.indicator(:style="levelStyle")
+  svg.indicator(:style="levelStyle" width='44' height='44')
     use(:href="'/icons.svg#indicator'")
 </template>
 
@@ -31,7 +31,6 @@
         }
       );
       watch(connectionRate, (state) => {
-        console.warn('CONNECTON RATE CHANGET TO: ', state);
         if (state === 'high') {
           levelStyle['--high-level-color'] = '#5ad677';
           levelStyle['--medium-level-color'] = '#5ad677';

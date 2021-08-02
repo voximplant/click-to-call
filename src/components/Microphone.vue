@@ -56,4 +56,8 @@
     outline: none;
     box-shadow: 0 0 0 2px var(--sui-blue-500);
   }
+  .microphone:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--sui-blue-500);
+  }
 </style>

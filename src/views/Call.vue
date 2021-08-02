@@ -1,6 +1,6 @@
 <template lang="pug">
 MicPermission(v-if="!isMicAccessGranted" :accessDenied="accessDenied")
-.call(v-else="isMicAccessGranted")
+.call(v-else-if="isMicAccessGranted")
   .settings-panel
     .vector
     Button(size="s" mode="primary" width="fill-container" icon="ic20-settings" @click="showSettings=true") Settings
@@ -112,7 +112,6 @@ MicPermission(v-if="!isMicAccessGranted" :accessDenied="accessDenied")
       };
       const micHint = ref<string>('Mute');
       const changeMicHint = (value: string) => {
-        console.error('MicKint', value);
         micHint.value = value;
       };
       return {
@@ -137,8 +136,12 @@ MicPermission(v-if="!isMicAccessGranted" :accessDenied="accessDenied")
 
 <style scoped>
   .call {
-    position: relative;
-    margin: 0 auto;
+    position: absolute;
+    margin: 0;
+    top: 50%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
     width: 350px;
     height: 500px;
     display: flex;
@@ -193,10 +196,16 @@ MicPermission(v-if="!isMicAccessGranted" :accessDenied="accessDenied")
       width: 44px;
     }
     & >>> .sui-tooltip {
-      padding: 2px 6px;
+      padding: 2px 0;
       width: max-content;
+      width: -moz-max-content;
+      white-space: nowrap;
       min-width: 40px;
       min-height: 20px;
+    }
+    & >>> .sui-tooltip-message {
+      border-left: solid 6px transparent;
+      border-right: solid 6px transparent;
     }
   }
   .vector-horizontal {

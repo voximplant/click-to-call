@@ -1,12 +1,13 @@
 <template lang="pug">
 .connection
-  .process
-    svg.process-dots(width='24' height='4')
-      use(:href="'/icons.svg#processing'")
-  .text Connection...
+  .state
+    .wrapper-process
+      .show-process
+        .processing
+    .text Connection...
   .decline(@click="hangup" tabindex=0)
-    svg.decline-key
-      use(:href="'/icons.svg#decline'")
+    svg.decline-key(width='44' height='44')
+      use(:href="'/icons.svg#decline'" width='44' height='44')
 </template>
 
 <script lang="ts">
@@ -38,33 +39,55 @@
       margin-right: 4px;
     }
   }
-  .process-dots {
-    --process-color-1: #662eff;
-    --process-color-2: #662eff;
-    --process-color-3: #662eff;
-    animation: dots 1s infinite;
+  .wrapper-process {
+    position: relative;
+    width: 24px;
+    height: 4px;
+    margin: 8px 0 16px 0;
   }
-  @keyframes dots {
+  .processing {
+    width: 24px;
+    height: 4px;
+    background-image: url('../assets/processing.svg');
+  }
+  .show-process {
+    position: absolute;
+    height: 100%;
+    width: 0;
+    left: 0;
+    overflow: hidden;
+    animation: show 1s infinite;
+  }
+  @keyframes show {
     0% {
-      --process-color-1: #ffffff;
-      --process-color-2: #ffffff;
-      --process-color-3: #ffffff;
+      width: 0;
     }
-    25% {
-      --process-color-1: #662eff;
-      --process-color-2: #ffffff;
-      --process-color-3: #ffffff;
+    9% {
+      width: 0;
     }
-    50% {
-      --process-color-1: #662eff;
-      --process-color-2: #662eff;
-      --process-color-3: #ffffff;
+    10% {
+      width: 8px;
     }
-    75% {
-      --process-color-1: #662eff;
-      --process-color-2: #662eff;
-      --process-color-3: #662eff;
+    39% {
+      width: 8px;
     }
+    40% {
+      width: 16px;
+    }
+    69% {
+      width: 16px;
+    }
+    70% {
+      width: 24px;
+    }
+    100% {
+      width: 24px;
+    }
+  }
+  .state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
   .text {
     font-family: Roboto, sans-serif;

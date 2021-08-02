@@ -1,7 +1,7 @@
 <template lang="pug">
 .volume
-    svg(:style="volumeLevelColor")
-      use(:href="'/icons.svg#volume-indicator'")
+    svg(:style="volumeLevelColor" width='248' height='4')
+      use(:href="'/icons.svg#volume-indicator'" width='248' height='4')
 </template>
 
 <script lang="ts">
@@ -14,16 +14,6 @@
       const audioContext = new AudioContext();
       let audioLevelNode: AudioWorkletNode;
       let mediaStreamSource: MediaStreamAudioSourceNode;
-      watch(inputId, async (state) => {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          audio: { deviceId: state.value },
-        });
-        mediaStreamSource?.disconnect(audioLevelNode);
-        mediaStreamSource = audioContext.createMediaStreamSource(
-          new MediaStream(stream.getAudioTracks())
-        );
-        mediaStreamSource.connect(audioLevelNode);
-      });
       const volumeLevelColor = reactive({
         '--volume-level-1': '#EBEDF2',
         '--volume-level-2': '#EBEDF2',
@@ -46,6 +36,16 @@
         mediaStreamSource?.connect(audioLevelNode);
         audioLevelNode.connect(audioContext.destination);
         mediaStreamSource?.connect(audioContext.destination);
+        watch(inputId, async (state) => {
+          const stream = await navigator.mediaDevices.getUserMedia({
+            audio: { deviceId: state.value },
+          });
+          mediaStreamSource?.disconnect(audioLevelNode);
+          mediaStreamSource = audioContext.createMediaStreamSource(
+            new MediaStream(stream.getAudioTracks())
+          );
+          mediaStreamSource.connect(audioLevelNode);
+        });
         watch(level, (state) => {
           if (state === '1%') {
             volumeLevelColor['--volume-level-1'] = '#2FBC4F';

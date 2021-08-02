@@ -2,7 +2,7 @@
 .redial-call
   .text Press the button to call
   .call-button(@click="redial" tabindex=0)
-    svg.call-key
+    svg.call-key(width='44' height='44')
       use(:href="'/icons.svg#call-button'")
 </template>
 

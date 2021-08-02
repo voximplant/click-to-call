@@ -1,7 +1,7 @@
 <template lang="pug">
 .decline(@click="disconnect" tabindex=0)
-  svg.decline-key
-    use(:href="'/icons.svg#decline'")
+  svg.decline-key(width='44' height='44')
+    use(:href="'/icons.svg#decline'" width='44' height='44')
 </template>
 
 <script lang="ts">
