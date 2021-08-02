@@ -41,6 +41,7 @@ MicPermission(v-if="!isMicAccessGranted" :accessDenied="accessDenied")
   import ConnectionRate from '@/components/ConnectionRate.vue';
   import Microphone from '@/components/Microphone.vue';
   import Decline from '@/components/Decline.vue';
+  import { getParameters } from '@/helpers/get-parameters';
 
   export default defineComponent({
     components: {
@@ -62,6 +63,7 @@ MicPermission(v-if="!isMicAccessGranted" :accessDenied="accessDenied")
       const accessDenied = ref<boolean>(false);
       const isMicAccessGranted = ref<boolean>(false);
       const sdk = VoxImplant.getInstance();
+      const parameters = getParameters();
       sdk.on(VoxImplant.Events.MicAccessResult, (e) => {
         if (e.result === true) {
           isMicAccessGranted.value = true;
@@ -89,6 +91,7 @@ MicPermission(v-if="!isMicAccessGranted" :accessDenied="accessDenied")
         call.value = sdk.call({
           number: process.env.VUE_APP_NUMBER,
           video: { sendVideo: false, receiveVideo: false },
+          extraHeaders: parameters,
         });
         callState.value = CallState.CONNECTING;
         call.value.on(VoxImplant.CallEvents.Connected, () => {
@@ -157,7 +160,7 @@ MicPermission(v-if="!isMicAccessGranted" :accessDenied="accessDenied")
     position: relative;
     width: 350px;
     border-radius: 8px 8px 0 0;
-    overflow-x: hidden;
+    overflow: hidden;
     & >>> .sui-button {
       height: 64px;
       border-radius: 0;
