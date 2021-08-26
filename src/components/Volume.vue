@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, onMounted, reactive, ref, toRef, watch } from 'vue';
+  import { defineComponent, onMounted, onUnmounted, reactive, ref, toRef, watch } from 'vue';
   export default defineComponent({
     props: ['inputId'],
     setup(props) {
@@ -21,6 +21,9 @@
         '--volume-level-4': '#EBEDF2',
         '--volume-level-5': '#EBEDF2',
         '--volume-level-6': '#EBEDF2',
+      });
+      onUnmounted(() => {
+        audioContext.suspend();
       });
       onMounted(async () => {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });

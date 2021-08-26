@@ -72,6 +72,12 @@
   .key-btn:hover {
     --key-color: #ebedf2;
   }
+  .key-btn {
+    --key-color: #f2f2f5;
+  }
+  .key-btn:hover {
+    --key-color: #ebedf2;
+  }
   .digit {
     width: 44px;
     height: 44px;

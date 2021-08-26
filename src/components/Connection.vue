@@ -5,17 +5,16 @@
       .show-process
         .processing
     .text Connection...
-  .decline(@click="hangup" tabindex=0)
-    svg.decline-key(width='44' height='44')
-      use(:href="'/icons.svg#decline'" width='44' height='44')
+  Decline(@click="hangup")
 </template>
 
 <script lang="ts">
   import { defineComponent } from 'vue';
   import { Button } from '@voximplant/spaceui';
+  import Decline from '@/components/Decline.vue';
 
   export default defineComponent({
-    components: { Button },
+    components: { Decline, Button },
     emit: ['update:cancelBtn'],
     setup(props, { emit }) {
       const hangup = () => {
@@ -94,19 +93,6 @@
     font-size: 16px;
     line-height: 20px;
     color: #662eff;
-    margin-top: 16px;
-  }
-  .decline {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    margin: 24px;
-    cursor: pointer;
-  }
-  .decline-key {
-    --decline-color: #ff7875;
-  }
-  .decline-key:hover {
-    --decline-color: #ff4d4f;
+    margin: 16px 0 24px 0;
   }
 </style>

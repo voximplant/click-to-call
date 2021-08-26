@@ -29,7 +29,7 @@
       let call: Call | null = null;
       const createTestCall = () => {
         const sdk = props.sdk;
-        call = sdk?.call({ number: 'testmic' });
+        call = sdk?.call({ number: process.env.VUE_APP_TEST_NUMBER });
         call?.on(VoxImplant.CallEvents.Connected, () => {
           message.value =
             'Please record your message, afterwards your message will be played back to you.';
