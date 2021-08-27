@@ -8,5 +8,5 @@ if (document.location.pathname === '/') {
 }
 callButton.setAttribute(
   'style',
-  'background-color: #662eff; width: 60px; height: 30px; text-align: center; border-radius: 4px; position: absolute'
+  'background-color: #662eff; margin:20px; cursor:pointer; padding: 8px 16px; text-align: center; border-radius: 4px; position: absolute; color: #fff'
 );
