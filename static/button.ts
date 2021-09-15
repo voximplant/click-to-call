@@ -3,7 +3,7 @@ callButton.innerText = 'Call';
 const url = 'http://localhost:8080';
 const openCallWindow = `window.open("${url}/call", "_blank", "width=800,height=600,resizable=no,toolbar=no,menubar=no,location=no,status=no")`;
 callButton.setAttribute('onclick', openCallWindow);
-if (document.location.pathname === '/') {
+if (document.location.pathname === '/button') {
   document.body.appendChild(callButton);
 }
 callButton.setAttribute(
