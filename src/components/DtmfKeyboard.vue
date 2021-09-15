@@ -1,9 +1,9 @@
 <template lang="pug">
 .digits-wrapper
   .dtmf-keyboard
-    .digit(v-for="n of buttons" @click="emitDigit" tabindex=0)
+    .digit(v-for="n of buttons" @click="emitDigit(n)" tabindex=0)
       svg.key-btn(:width="'44'" :height="'44'")
-        use(:href="n" )
+        use(:href="`/icons.svg#button-${n}`" )
 </template>
 
 <script lang="ts">
@@ -11,24 +11,10 @@
   export default defineComponent({
     emit: ['update:digit'],
     setup(props, { emit }) {
-      const buttons = [
-        '/icons.svg#button-1',
-        '/icons.svg#button-2',
-        '/icons.svg#button-3',
-        '/icons.svg#button-4',
-        '/icons.svg#button-5',
-        '/icons.svg#button-6',
-        '/icons.svg#button-7',
-        '/icons.svg#button-8',
-        '/icons.svg#button-9',
-        '/icons.svg#button-z',
-        '/icons.svg#button-0',
-        '/icons.svg#button-r',
-      ];
+      const buttons = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '*', '0', '#'];
       const keyStyle = { '--key-color': '#f2f2f5' };
-      const emitDigit = (e: Event) => {
-        const input = e.target as HTMLElement;
-        emit('update:digit', input.innerText);
+      const emitDigit = (n: string) => {
+        emit('update:digit', n);
       };
       return {
         emitDigit,
