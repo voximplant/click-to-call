@@ -23,7 +23,7 @@ The setup consists of two parts: VoxEngine cloud setup and the widget's source c
 
 ### VoxEngine setup
 
-[Follow the instruction]() to set up the cloud part before you download the source code.
+[Follow the instruction](https://voximplant.com/docs/tutorials/calls/click-to-call-for-web-and-mobile-application) to set up the cloud part before you download the source code.
 
 ### Application setup
 
