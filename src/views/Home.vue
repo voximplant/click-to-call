@@ -42,6 +42,7 @@ MicPermission(v-if="!isMicAccessGranted" :accessDenied="accessDenied")
   import Microphone from '@/components/Microphone.vue';
   import Decline from '@/components/Decline.vue';
   import { getParameters } from '@/helpers/get-parameters';
+  import { config } from '@/shared/config';
 
   export default defineComponent({
     components: {
@@ -78,9 +79,10 @@ MicPermission(v-if="!isMicAccessGranted" :accessDenied="accessDenied")
           showDebugInfo: true,
           progressTone: true,
           progressToneCountry: 'US',
+          node: config.accountNode,
         })
-        .then(() => sdk.connect(false))
-        .then(() => sdk.login(process.env.VUE_APP_USER, process.env.VUE_APP_PASSWORD))
+        .then(() => sdk.connect())
+        .then(() => sdk.login(config.user, config.password))
         .then(() => {
           createCall();
         });
@@ -89,7 +91,7 @@ MicPermission(v-if="!isMicAccessGranted" :accessDenied="accessDenied")
       };
       const createCall = () => {
         call.value = sdk.call({
-          number: process.env.VUE_APP_NUMBER,
+          number: config.number,
           video: { sendVideo: false, receiveVideo: false },
           extraHeaders: parameters,
         });
@@ -154,6 +156,7 @@ MicPermission(v-if="!isMicAccessGranted" :accessDenied="accessDenied")
     box-shadow: 0 2px 8px rgba(40, 41, 61, 0.04), 0 16px 24px rgba(96, 97, 112, 0.16);
     border-radius: 12px;
   }
+
   .settings-panel {
     display: flex;
     justify-content: space-around;
@@ -161,14 +164,17 @@ MicPermission(v-if="!isMicAccessGranted" :accessDenied="accessDenied")
     width: 350px;
     border-radius: 8px 8px 0 0;
     overflow: hidden;
+
     & >>> .sui-button {
       height: 64px;
       border-radius: 0;
     }
+
     & >>> .sui-icon {
       --sui-icon-color: #ffffff !important;
     }
   }
+
   .vector {
     position: absolute;
     width: 0;
@@ -177,6 +183,7 @@ MicPermission(v-if="!isMicAccessGranted" :accessDenied="accessDenied")
     top: 0;
     border-right: 1px solid #8b55ff;
   }
+
   .call-state {
     position: relative;
     box-sizing: border-box;
@@ -187,6 +194,7 @@ MicPermission(v-if="!isMicAccessGranted" :accessDenied="accessDenied")
     align-items: center;
     flex-direction: column;
   }
+
   .controls {
     position: relative;
     height: 44px;
@@ -195,9 +203,11 @@ MicPermission(v-if="!isMicAccessGranted" :accessDenied="accessDenied")
     box-sizing: border-box;
     display: flex;
     justify-content: space-between;
+
     & .hint-container {
       width: 44px;
     }
+
     & >>> .sui-tooltip {
       padding: 2px 0;
       width: max-content;
@@ -206,17 +216,20 @@ MicPermission(v-if="!isMicAccessGranted" :accessDenied="accessDenied")
       min-width: 40px;
       min-height: 20px;
     }
+
     & >>> .sui-tooltip-message {
       border-left: solid 6px transparent;
       border-right: solid 6px transparent;
     }
   }
+
   .vector-horizontal {
     position: relative;
     width: 318px;
     height: 0;
     border-top: 1px solid #ebedf2;
   }
+
   .footer {
     position: relative;
     display: flex;

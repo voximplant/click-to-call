@@ -21,9 +21,18 @@
       call.value.on(
         VoxImplant.CallEvents.CallStatsReceived,
         (e: EventHandlers.CallStatsReceived) => {
-          if (e.stats.totalLoss && e.stats.totalLoss <= 0.01) {
+          const totalPacketsReceived = Object.values(e.stats.inbound).reduce((acc, inbound) => {
+            acc += inbound.packetsReceived;
+            return acc;
+          }, 0);
+          const totalPacketsLost = Object.values(e.stats.inbound).reduce((acc, inbound) => {
+            acc += inbound.packetsLost;
+            return acc;
+          }, 0);
+          const lossRate = totalPacketsReceived ? totalPacketsLost / totalPacketsReceived : 0;
+          if (lossRate <= 0.01) {
             connectionRate.value = 'high';
-          } else if (e.stats.totalLoss && e.stats.totalLoss <= 0.02) {
+          } else if (lossRate <= 0.02) {
             connectionRate.value = 'medium';
           } else {
             connectionRate.value = 'low';

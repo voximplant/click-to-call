@@ -16,7 +16,7 @@
     "postcss-custom-media": "^7.0.8",
     "postcss-nested": "^4.2.3",
     "postcss-preset-env": "^6.7.0",
-    "voximplant-websdk": "^4.5.0-2227",
+    "voximplant-websdk": "4.8.0-2803",
     "vue": "^3.0.0",
     "vue-class-component": "^8.0.0-0",
     "vue-router": "^4.0.0-0"

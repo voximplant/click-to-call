@@ -32,10 +32,11 @@ The setup consists of two parts: VoxEngine cloud setup and the widget's source c
 1. Rename the **.env.example** file to **.env**
 1. In the **.env** file:
     - Fill your user credentials into the `VUE_APP_USER` and `VUE_APP_PASSWORD` properties
+    - Add account node to `VUE_APP_ACCOUNT_NODE` [See the node instruction](https://voximplant.com/docs/getting-started/platform/web#initialize-the-sdk)
     - Add the number to call to the `VUE_APP_NUMBER` property
     - Fill the `testmic` string to the `VUE_APP_TEST_NUMBER` property
 1. Run `yarn serve` or `npm run serve` to run the development build
-1. Open the http://localhost:8080/ URL to test the application
+1. Open the [http://localhost:8080/call](http://localhost:8080/call) URL to test the application
 1. Once the application works correctly, you can assemble the application
 1. If you do not plan to upload the application to the webserver root folder, set up the `publicPath` property in the `vue.config.js` file. [See the instruction](https://cli.vuejs.org/config/#publicpath)
 1. To make a production build, run `yarn build` or `npm run build`

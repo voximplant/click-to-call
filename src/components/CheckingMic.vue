@@ -15,6 +15,7 @@
   import Timer from '@/components/Timer.vue';
   import { CallState } from '@/enums/CallState';
   import { EventHandlers } from 'voximplant-websdk/EventHandlers';
+  import { config } from '@/shared/config';
 
   export default defineComponent({
     components: { Timer, Button },
@@ -29,7 +30,7 @@
       let call: Call | null = null;
       const createTestCall = () => {
         const sdk = props.sdk;
-        call = sdk?.call({ number: process.env.VUE_APP_TEST_NUMBER });
+        call = sdk?.call({ number: config.testNumber });
         call?.on(VoxImplant.CallEvents.Connected, () => {
           message.value =
             'Please record your message, afterwards your message will be played back to you.';
@@ -45,7 +46,8 @@
           }
         });
         call?.on(VoxImplant.CallEvents.CallStatsReceived, (e: EventHandlers.CallStatsReceived) => {
-          totalPacketLost = e.stats.totalPacketsLost;
+          console.log('___ e', e);
+          // totalPacketLost = e.stats.totalPacketsLost;
         });
       };
       createTestCall();
