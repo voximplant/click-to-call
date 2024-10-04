@@ -46,8 +46,10 @@
           }
         });
         call?.on(VoxImplant.CallEvents.CallStatsReceived, (e: EventHandlers.CallStatsReceived) => {
-          console.log('___ e', e);
-          // totalPacketLost = e.stats.totalPacketsLost;
+          totalPacketLost = Object.values(e.stats.inbound).reduce((acc, inbound) => {
+            acc += inbound.packetsLost;
+            return acc;
+          }, 0);
         });
       };
       createTestCall();

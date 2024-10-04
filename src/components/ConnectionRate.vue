@@ -29,7 +29,9 @@
             acc += inbound.packetsLost;
             return acc;
           }, 0);
-          const lossRate = totalPacketsReceived ? totalPacketsLost / totalPacketsReceived : 0;
+          const lossRate = totalPacketsReceived
+            ? totalPacketsLost / (totalPacketsLost + totalPacketsReceived)
+            : 0;
           if (lossRate <= 0.01) {
             connectionRate.value = 'high';
           } else if (lossRate <= 0.02) {
