@@ -10604,10 +10604,10 @@ void-elements@^3.1.0:
   resolved "https://registry.yarnpkg.com/void-elements/-/void-elements-3.1.0.tgz#614f7fbf8d801f0bb5f0661f5b2f5785750e4f09"
   integrity sha1-YU9/v42AHwu18GYfWy9XhXUOTwk=
 
-voximplant-websdk@^4.5.0-2227:
-  version "4.5.0-2227"
-  resolved "https://registry.yarnpkg.com/voximplant-websdk/-/voximplant-websdk-4.5.0-2227.tgz#f3cd0e6c73a7ad671e25c7dc996d4f3bc74d10a4"
-  integrity sha512-B5ayg8hzxML+oKQVUNnOV//nJdH2L2MISA3O4fenGaY4WTB4OL//Ghndbur0viIIj6rd/WQATx7Y/LSb8xeYLw==
+voximplant-websdk@4.8.0-2803:
+  version "4.8.0-2803"
+  resolved "https://registry.yarnpkg.com/voximplant-websdk/-/voximplant-websdk-4.8.0-2803.tgz#e5c21930751bb51adb0d739776d2ca7829ecfc88"
+  integrity sha512-7QRaqHlYuGThG4vbBbNcmmyPHi7ITP41re/OIw8ovIGMrW/S9gHJ/IU4qphC3FojFPDzbMLY5V7V5aeo682+Rw==
 
 vue-class-component@^8.0.0-0:
   version "8.0.0-rc.1"
